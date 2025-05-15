@@ -55,8 +55,6 @@ async def handle_re_callback(client, callback_query):
     for f in files:
         dummy_message = await client.get_messages(chat_id=1733124290, message_ids=f["file_id"])
         await process_queue(client, dummy_message, file_type, dump)
-        await client.send_message(1733124290, "Ended     b")
-    await client.send_message(1733124290, "Ended     b")
     await client.send_message(user_id, "Renaming Ended! \nClick On Delete Data If Renaming Ended Properly Else Use `/process {batch no}`. To Do Again",
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("Delete Data", callback_data=f"delsyd_{batch_no}")]]
@@ -113,16 +111,12 @@ async def process_queue(bot, update, type, dump):
     
     file_path = f"downloads/{new_filename}"
     file = update
-    await client.send_message(1733124290, "wnnnnn")
 
     ms = await client.send_message(update.from_user.id, f" __**Renaming \n{file_name} \nto \n{new_filename}**🥺__\n\n**Dᴏᴡɴʟᴏᴀᴅɪɴɢ....⏳**")
     try:
         path = await bot.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=(f"\n⚠️ __**Renaming \n{file_name} \nto \n{new_filename}**__\n\n❄️ **Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....**", ms, time.time()))
     except Exception as e:
         return await ms.edit(e)
-
-    
-    await client.send_message(1733124290, "wnnkkk")
     if (_bool_metadata):
         metadata_path = f"Metadata/{new_filename}" 
         metadata = await db.get_metadata_code(update.from_user.id)
@@ -173,8 +167,6 @@ async def process_queue(bot, update, type, dump):
                 ph_path = None
                 print(e)
 
-    
-    await client.send_message(1733124290, "11111111kk")
     if media.file_size > 2000 * 1024 * 1024:
         try:
             user_bot = await db.get_user_bot(Config.ADMIN[0])
@@ -243,7 +235,6 @@ async def process_queue(bot, update, type, dump):
             return await ms.edit(f" Eʀʀᴏʀ {e}")
 
     else:
-        await client.send_message(1733124290, "11kkkkkkk111kk")
         try:
             if type == "document":
                 filw = await bot.send_document(
