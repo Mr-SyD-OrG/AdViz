@@ -290,7 +290,7 @@ async def process_queue(bot, update, type, dump):
     if metadata_path:
         os.remove(metadata_path)
 
-    return
+    
 
 
 
