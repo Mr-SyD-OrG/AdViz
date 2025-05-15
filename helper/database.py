@@ -52,6 +52,15 @@ class Database:
             {"$set": {f"swaps.{key}": value}},
             upsert=True
         )
+    
+    async def delete_batch(self, user_id: int, batch_no: int):
+        result = await self.batches.delete_many({
+             "user_id": user_id,
+             "batch_no": batch_no
+        })
+        return result.deleted_count
+
+
     async def delete_swap(self, user_id: int, key: str):
         await self.usr.update_one(
             {"_id": user_id},
