@@ -285,13 +285,7 @@ async def process_queue(bot, update, type, dump):
         
 
 
-    if ph_path:
-        os.remove(ph_path)
-    if file_path:
-        os.remove(file_path)
-    if metadata_path:
-        os.remove(metadata_path)
-
+    await remove_path(ph_path, file_path, dl_path, metadata_path)
     
 
 
