@@ -53,6 +53,7 @@ async def handle_re_callback(client, callback_query):
         return await callback_query.message.edit_text("No files found in this batch.")
     dump = await db.get_dump(user_id)
     for f in files:
+        await client.send_message(user_id, "Processing next...")
         dummy_message = await client.get_messages(chat_id=1733124290, message_ids=f["file_id"])
         await process_queue(client, dummy_message, file_type, dump)
         await client.send_message(user_id, "Processing next...")
