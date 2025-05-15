@@ -97,7 +97,6 @@ async def process_queue(bot, update, type, dump):
         pass
     new_name = fule_name.replace("_", " ")
     new_filename_ = new_name
-    await client.send_message(1733124290, "wbbb")
     try:
         # adding prefix and suffix
         new_filename = add_prefix_suffix(new_filename_, prefix, suffix)
@@ -154,7 +153,6 @@ async def process_queue(bot, update, type, dump):
     else:
         caption = f"**{new_filename}**"
 
-    await client.send_message(1733124290, "11111111kk")
     if (media.thumbs or c_thumb):
         if c_thumb:
             ph_path = await bot.download_media(c_thumb)
