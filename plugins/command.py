@@ -99,7 +99,6 @@ async def add_dump(client, message):
 
 @Client.on_message(filters.command("batch") & filters.private)
 async def start_batch(client, message):
-    await message.reply_text("Batch #{batch_no} started.\nSend files now. Type /endbatch to finish.")
     user_id = message.from_user.id
     last = await db.batches.find({"user_id": user_id}).sort("batch_no", -1).to_list(1)
     batch_no = last[0]["batch_no"] + 1 if last else 1
