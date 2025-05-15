@@ -151,19 +151,15 @@ async def end_btch(client, message):
     user_id = message.from_user.id
     parts = message.text.split(maxsplit=2)
 
-    if len(parts) != 3:
+    if len(parts) != 2:
         return await message.reply_text(
-            "**Usage:** `/process <batch_no> <type>`\n\n"
-            "Example: `/process 12 document or video or audio`",
+            "**Usage:** `/process <batch_no>`\n\n"
+            "Example: `/process 12`",
             parse_mode=enums.ParseMode.MARKDOWN
         )
 
     
     batch_no = int(parts[1])
-    process_type = parts[2].strip().lower()
-    if process_type not in ["document", "video", "audio"]:
-        return await message.reply_text("No valid type found.")
-
     files_cursor = await db.get_batch_files(user_id, batch_no)
     files = await files_cursor.to_list(length=None)
 
