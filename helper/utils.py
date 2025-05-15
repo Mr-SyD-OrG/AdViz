@@ -68,6 +68,11 @@ async def start_clone_bot(UsrBot, data=None):
 def client(data):
     return Client("USERBOT", Config.API_ID, Config.API_HASH, session_string=data)
 
+async def remove_path(*paths):
+    for path in paths:
+        if path and os.path.lexists(path):
+            os.remove(path)
+
 
 async def progress_for_pyrogram(current, total, ud_type, message, start):
     now = time.time()
