@@ -28,7 +28,7 @@ async def handle_re_callback(client, callback_query):
         return await callback_query.answer("Invalid callback data", show_alert=True)
 
     batch_no = int(parts[1])
-    await db.remove_batch(user_id, batch_no)
+    await db.delete_batch(user_id, batch_no)
     await client.send_message(
         user_id,
         "Deleted!"
