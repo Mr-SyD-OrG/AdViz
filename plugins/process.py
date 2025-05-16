@@ -19,21 +19,7 @@ from helper.ffmpeg import fix_thumb, take_screen_shot, change_metadata
 import humanize
 
 
-@Client.on_callback_query(filters.regex("delsyd"))
-async def handle_re_callback(client, callback_query):
-    user_id = callback_query.from_user.id
 
-    parts = callback_query.data.split("_")
-    if len(parts) != 2:
-        return await callback_query.answer("Invalid callback data", show_alert=True)
-
-    batch_no = int(parts[1])
-    await db.delete_batch(user_id, batch_no)
-    await client.send_message(
-        user_id,
-        "Deleted!"
-    )
-    
 @Client.on_callback_query(filters.regex("renme"))
 async def handle_re_callback(client, callback_query):
     user_id = callback_query.from_user.id
