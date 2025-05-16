@@ -287,8 +287,17 @@ async def process_queue(bot, update, type, dump):
         
 
     await client.send_message(update.from_user.id, "Test")
-
-    await remove_path(ph_path, file_path, path, metadata_path)
+    os.remove(file_path)
+    await client.send_message(update.from_user.id, "Test")
+    if ph_path:
+        os.remove(ph_path)
+    await client.send_message(update.from_user.id, "Test")
+    if metadata_path:
+        os.remove(metadata_path)
+    await client.send_message(update.from_user.id, "Test")
+    if path:
+        os.remove(path)
+   # await remove_path(ph_path, file_path, path, metadata_path)
     await client.send_message(update.from_user.id, "Test")
                               
 
