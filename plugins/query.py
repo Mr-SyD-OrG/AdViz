@@ -7,7 +7,6 @@ from helper.database import db
 import random
 import psutil
 from info import AUTH_CHANNEL
-from syd import is_req_subscribed
 from helper.utils import humanbytes
 
 
@@ -24,14 +23,12 @@ async def cb_handler(client, query: CallbackQuery):
 
             reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton(
-                    '⛅ Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/Bot_Cracker'),
+                    '⛅ Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/{Config.UPDATES}'),
                 InlineKeyboardButton(
-                    'Sᴜᴩᴩᴏʀᴛ ⛈️', url='https://t.me/+O1mwQijo79s2MjJl')
+                    'Sᴜᴩᴩᴏʀᴛ ⛈️', url='https://t.me/{Config.SUPPORT}')
             ], [
                 InlineKeyboardButton('❄️ Δʙᴏᴜᴛ', callback_data='about'),
-                InlineKeyboardButton('ʙΔᴄᴋ-ᴜᴩ 🗯️', url='https://t.me/+1C8Usv5MSzA3MGM1'),
                 InlineKeyboardButton('Hᴇʟᴩ ❗', callback_data='help')
-            ], [InlineKeyboardButton('⊛ Jᴏɪɴ ᴍᴏᴠɪєꜱ CʜᴀɴɴᴇL ⊛', url='https://t.me/Mod_Moviez_X')
             ]])
         )
     elif data == "help":
@@ -50,12 +47,7 @@ async def cb_handler(client, query: CallbackQuery):
             ]])
         )
 
-    elif data == "sydcheck":
-        if AUTH_CHANNEL and not await is_req_subscribed:
-          await query.answer("ʀᴇQᴇᴜꜱᴛ ᴛᴏ Jᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴍᴀʜɴ! 😒 Dᴏɴᴛ ᴛʀʏ ᴛᴏ ꜱʜᴏᴡ ʏᴏᴜʀ ᴏᴠᴇʀꜱᴍᴀʀᴛɴᴇꜱꜱ ᴩʟᴢ🥲🥲", show_alert=True)
-          return
-        await query.message.edit_text("<b>Oᴋ✅, ʏᴏᴜ ᴄΔɴ ᴄᴏɴᴛɪɴᴜᴇ ʏᴏᴜʀ ᴩʀᴏᴄᴇꜱꜱ.... Δɴᴅ Tʜᴀɴᴋꜱ ꜰᴏʀ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ... 🧭\nPʟᴇᴀꜱᴇ Rᴇ-Fᴏʀᴡᴀʀᴅ ʏᴏᴜʀ Ғɪʟᴇ Tᴏ ᴄᴏɴᴛɪɴᴜᴇ... 🪭</b>")
-
+   
 
     elif data == "about":
         await query.message.edit_media(
@@ -94,37 +86,7 @@ async def cb_handler(client, query: CallbackQuery):
             reply_markup=reply_markup
         )
 
-    elif data == "season_false":
-        syd = await db.get_metadata(update.from_user.id)
-        if syd:
-            await query.message.edit_reply_markup(
-                    reply_markup=InlineKeyboardMarkup([[
-                            InlineKeyboardButton("Tʀᴜᴇ ✅", callback_data="season_true")
-                    ],[
-                            InlineKeyboardButton("✖️ Close", callback_data="close")
-                    ]])
-            )
-        else:
-            await query.message.edit_reply_markup(
-                    reply_markup=InlineKeyboardMarkup([[
-                            InlineKeyboardButton("Tʀᴜᴇ ✅", callback_data="season_true")
-                    ],[
-                            InlineKeyboardButton("✖️ Close", callback_data="close")
-                    ]])
-            )
-
-            
-    elif data == "season_true":
-        await db.set_sydson(user_id, "True")
-        await query.message.edit_text(
-            text="Sᴇᴛ ᴛʀᴜᴇ ᴏʀ ꜰᴀʟꜱᴇ, ɪꜰ ꜱᴇᴀꜱᴏɴ ɴᴜᴍʙᴇʀ ɪꜱ ᴛᴏ ʙᴇ ɪɴ ꜰɪʟᴇ ᴇᴠᴇʀʏᴛɪᴍᴇ (ɪꜰ ꜰɪʟᴇ ᴅᴏɴᴛ ʜᴀᴠᴇ ꜱᴇᴀꜱᴏɴ ɴᴏ. ɪᴛ ᴡɪʟʟ ʙᴇ ᴅᴇꜰᴜᴀʟᴛ ᴛᴏ 1) ᴏʀ ꜰᴀʟꜱᴇ ᴛᴏ ᴀᴠᴏɪᴅ ꜱᴇᴀꜱᴏɴ ᴛᴀɢ",
-            reply_markup=InlineKeyboardMarkup([[
-                InlineKeyboardButton("Fᴀʟꜱᴇ ✖️", callback_data="season_false")
-            ],[
-                InlineKeyboardButton("✖️ Close", callback_data="close")
-            ]])          
-        )
-
+    
     elif data == 'userbot':
         userBot = await db.get_user_bot(query.from_user.id)
 
