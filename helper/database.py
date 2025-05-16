@@ -16,14 +16,7 @@ class Database:
         self.batches = self.db.batches
         self.active_batches = self.db.active_batches
 
-    async def find_join_req(self, id):
-        return bool(await self.req.find_one({'id': id}))
-        
-    async def add_join_req(self, id):
-        await self.req.insert_one({'id': id})
-        
-    async def del_join_req(self):
-        await self.req.drop()
+
         
     def new_user(self, id):
         return dict(
