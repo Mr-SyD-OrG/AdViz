@@ -196,7 +196,7 @@ async def handle_sedia(client, message):
     user_id = message.from_user.id
     batch_no = await db.get_active_batch(user_id)
     if not batch_no:
-        return await message.reply_text("Send new filename:", reply_markup=ForceReply())
+        return await message.reply("Send new filename Or Use /batch For **Auto**", reply_markup=ForceReply(), reply_to_message_id=message.id)
     media = message.document or message.video
     await db.add_file_to_batch(
         user_id,
