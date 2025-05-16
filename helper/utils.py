@@ -7,7 +7,7 @@ from config import Config, Txt
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram import Client
 from info import AUTH_CHANNEL
-import re, aiohttp
+import re, aiohttp, os
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
