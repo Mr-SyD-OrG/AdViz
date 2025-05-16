@@ -280,13 +280,17 @@ async def process_queue(bot, update, type, dump):
             return await ms.edit(f" Eʀʀᴏʀ {e}")
 
     await ms.delete()
+    await client.send_message(update.from_user.id, "Test")
+
     if abs(file_size - fle_size) > 10 * 1024 * 1024:
         await client.send_message(update.from_user.id, f"{file_name} FOUND FILE SIZE ERROR. PLEASE RE RENAME AFTER CONFIRMING THERE IS AN ERROR")
         
 
+    await client.send_message(update.from_user.id, "Test")
 
     await remove_path(ph_path, file_path, path, metadata_path)
-    
+    await client.send_message(update.from_user.id, "Test")
+                              
 
 
 
