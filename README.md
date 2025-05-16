@@ -1,24 +1,3 @@
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
-
-# 𝗦𝗜𝗚𝗠𝗔 𝗥𝗘𝗡𝗔𝗠𝗘 𝗕𝗢𝗧
-
-### Sᴀᴍᴩʟᴇ Bᴏᴛ (Official Sɪɢᴍᴀ Rᴇɴᴀᴍᴇ Bᴏᴛ)
-
-<p align="center">
-🤖 <a href="https://t.me/SigmaRenameBot"><img title="Telegram" src="https://img.shields.io/static/v1?label=SigmaRename&message=BOT&color=blue-green"></a> 🤖
-</p>
-
-## Deploy To Render
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Snowball-01/Sigma-Rename-Bot)
-
-## Deploy To Railway
-
-<a href="https://graph.org/file/fabd75cd5043d2cfdc13d.jpg"><img src="https://railway.app/button.svg" alt="Deploy"></a>
-
-## Deploy To Heroku
-
-<a href="https://heroku.com/deploy?template=https://github.com/Snowball-01/Sigma-Rename-Bot"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy"></a>
 
 ## Configs
 
@@ -65,6 +44,3 @@ broadcast - Send Message To All Users (Admin Only)
 add_userbot - To add premium account (able to rename 4gb file)
 ```
 
-## Created By ❄️
-
-- `Snowball`
