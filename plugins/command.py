@@ -1,7 +1,7 @@
 from pyrogram import Client, filters, enums
 from helper.database import db
 import re
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ForceReply
 import asyncio
 from plugins.features import features_button
 
@@ -195,7 +195,7 @@ async def handle_sedia(client, message):
     user_id = message.from_user.id
     batch_no = await db.get_active_batch(user_id)
     if not batch_no:
-        return await message.reply_text("No Batch")
+        return await message.reply_text("Send new filename:", reply_markup=ForceReply())
     media = message.document or message.video
     await db.add_file_to_batch(
         user_id,
