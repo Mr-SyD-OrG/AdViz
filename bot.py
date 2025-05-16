@@ -55,7 +55,7 @@ class Bot(Client):
                 logging.warning(e)
                 logging.warning("Make Sure Bot admin in force sub channel")
                 self.force_channel = None
-        if Config.WEB:
+        if Config.WEBHOOK:
             app = web.AppRunner(await web_server())
             await app.setup()
             bind_address = "0.0.0.0"
