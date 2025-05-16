@@ -3,7 +3,7 @@ from helper.database import db
 import re
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ForceReply
 import asyncio
-from plugins.features import features_button
+from plugins.features import features_button, extract_episode_number
 
 @Client.on_callback_query(filters.regex('^allinone'))
 async def hale_filters(bot: Client, query: CallbackQuery):
@@ -126,8 +126,9 @@ async def end_batch(client, message):
     if len(files) > 15:
         for f in files:
             part = f["file_name"]
-            episode = next((x for x in part.split() if "ep" in x.lower() or "720" in x or "1080" in x or "480" in x), "File")
-            text += f"- {episode}\n"
+            epp = extract_episode_number(part)
+            episode = next((x for x in part.split() if "720" in x or "1080" in x or "480" in x), "File")
+            text += f"- {episode} E{epp}\n"
     else:
         text += "\n".join(f"- {f['file_name']}" for f in files)
 
