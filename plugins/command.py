@@ -103,7 +103,7 @@ async def start_batch(client, message):
     last = await db.batches.find({"user_id": user_id}).sort("batch_no", -1).to_list(1)
     batch_no = last[0]["batch_no"] + 1 if last else 1
     await db.set_active_batch(user_id, batch_no)
-    await message.reply_text(f"Batch #{batch_no} started.\nSend files now. Type `endbatch` to finish.")
+    await message.reply_text(f"Batch #{batch_no} started.\nSend files now. Type /endbatch to finish.")
 
 
 @Client.on_message(filters.command("endbatch") & filters.private)
@@ -173,8 +173,9 @@ async def end_btch(client, message):
     if len(files) > 15:
         for f in files:
             part = f["file_nme"]
-            episode = next((x for x in part.split() if "ep" in x.lower() or "720" in x or "1080" in x), "File")
-            text += f"- {episode}\n"
+            epp = extract_episode_number(part)
+            episode = next((x for x in part.split() if "720" in x or "1080" in x or "480" in x), "File")
+            text += f"- {episode} E{epp}\n"
     else:
         text += "\n".join(f"- {f['file_name']}" for f in files)
 
@@ -205,7 +206,7 @@ async def handle_sedia(client, message):
         media.file_name,
         "document" if message.document else "video"
     )
-    await message.reply_text("added")
+    await message.reply_text("ᴀᴅᴅᴇᴅ")
 
     
 @Client.on_message(filters.private & filters.command('set_prefix'))
