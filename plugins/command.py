@@ -57,7 +57,10 @@ async def hale_filters(bot: Client, query: CallbackQuery):
         ]]
         await query.message.edit_reply_markup(reply_markup=InlineKeyboardMarkup(button))
 
-    
+    elif type == 'del':
+        await db.delete_batch(user_id, batch_no)
+        await bot.send_message(user_id, "Deleted!")
+
     elif type == 'curiousity':
         await query.answer(text="The Other Button..!", show_alert=True)
 
