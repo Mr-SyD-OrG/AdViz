@@ -20,7 +20,7 @@ class Database:
     async def update_user(self, user_id, update: dict):
         await self.col.update_one({"_id": user_id}, {"$set": update}, upsert=True)
 
-from pyrogram import Client, filters
+from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from telethon.sync import TelegramClient
 from telethon.sessions import StringSession
@@ -48,7 +48,7 @@ async def start(client, message):
         InlineKeyboardButton(' Hᴇʟᴩ ❗', callback_data='help')
     ], [InlineKeyboardButton('⚙️ sᴛΔᴛs ⚙️', callback_data='stats')]])
     if Config.PICS:
-        await message.reply_photo(random.choice(Config.PICS), caption=Txt.START_TXT.format(user.mention), reply_markup=button)
+        await message.reply_photo(random.choice(Config.PICS), caption=Txt.START_TXT.format(user.mention), reply_markup=button, parse_mode=enums.ParseMode.HTML)
     else:
         await message.reply_text(text=Txt.START_TXT.format(user.mention), reply_markup=button, disable_web_page_preview=True)
 
