@@ -9,7 +9,7 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, 
 import asyncio
 
 
-@bot.on_message(filters.command("text") & filters.private)
+@Client.on_message(filters.command("text") & filters.private)
 async def handle_text_command(client: Client, message: Message):
     user_id = message.from_user.id
     user = await db.get_user(user_id)
