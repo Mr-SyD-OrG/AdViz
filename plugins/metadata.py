@@ -1,29 +1,60 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from helper.database import db
 from pyromod.exceptions import ListenerTimeout
 from config import Txt
-from plugins.features import features_button
 
 
-@Client.on_message(filters.private & filters.command('metadata'))
-async def handle_metadata(bot: Client, message: Message):
+@Client.on_message(filters.command("upgrade") & filters.user([123456789]))  # Replace with your admin ID
+async def upgrade_user(client: Client, message: Message):
+    parts = message.text.split()
+    if len(parts) != 2 or not parts[1].isdigit():
+        return await message.reply("Usage: /upgrade <user_id>")
+    
+    target_id = int(parts[1])
+    await db.update_user(target_id, {"is_premium": True})
+    await message.reply(f"User `{target_id}` has been upgraded to Premium.")
 
-    ms = await message.reply_text("**Please Wait...**")
-    user_metadata = await db.get_metadata_code(message.from_user.id)
-    markup = await features_button(message.from_user.id)
+from pyrogram import filters
+from pyrogram.types import Message
+from pyromod.exceptions import ListenerTimeout
+from telethon.sessions import StringSession
+from telethon import TelegramClient
 
-    await ms.edit(f'**ʜᴇʀᴇ ᴛʜᴇ ᴀᴠᴀɪʟᴀʙʟᴇ ғᴇᴀᴛᴜʀᴇ** 🍀**\n\nYour Current Metadata:-\n\n➜ `{user_metadata}` ', reply_markup=markup)
+@bot.on_message(filters.command("add_account") & filters.private)
+async def add_account_handler(client: Client, message: Message):
+    user_id = message.from_user.id
+    user = await db.get_user(user_id)
 
+    if user and not user.get("is_premium", False) and len(user.get("accounts", [])) >= 1:
+        return await message.reply("Free users can only add one account. Upgrade to premium for more.")
 
-@Client.on_message(filters.private & filters.command('set_metadata'))
-async def handle_set_metadata(bot: Client, message: Message):
     try:
-        metadata = await bot.ask(text=Txt.SEND_METADATA, chat_id=message.from_user.id, filters=filters.text, timeout=30, disable_web_page_preview=True)
+        metadata = await bot.ask(
+            text="Please send your **Telethon StringSession**.\n\nTimeout in 30 seconds.",
+            chat_id=user_id,
+            filters=filters.text,
+            timeout=30,
+            disable_web_page_preview=True
+        )
     except ListenerTimeout:
-        await message.reply_text("⚠️ Error!!\n\n**Request timed out.**\nRestart by using /metadata", reply_to_message_id=message.id)
-        return
-    print(metadata.text)
-    ms = await message.reply_text("**Please Wait...**", reply_to_message_id=metadata.id)
-    await db.set_metadata_code(message.from_user.id, metadata_code=metadata.text)
-    await ms.edit("**Your Metadta Code Set Successfully ✅**")
+        return await message.reply_text(
+            "⚠️ Error!!\n\n**Request timed out.**\nRestart by using /add_account",
+            reply_to_message_id=message.id
+        )
+
+    string = metadata.text.strip()
+
+    # Try initializing to validate the session
+    try:
+        async with TelegramClient(StringSession(string), API_ID, API_HASH) as userbot:
+            await userbot.get_me()
+    except Exception as e:
+        return await message.reply(f"Invalid session string.\n\nError: `{e}`")
+
+    # Save to DB
+    if not user:
+        user = {"_id": user_id, "accounts": []}
+
+    user.setdefault("accounts", []).append({"session": string})
+    await db.update_user(user_id, user)
+    await message.reply("Account added successfully and validated.")
