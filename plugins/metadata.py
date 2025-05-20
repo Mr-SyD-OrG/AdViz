@@ -2,9 +2,12 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 from pyromod.exceptions import ListenerTimeout
 from config import Txt, Config
+from .start import db
+from telethon import TelegramClient
+from telethon.sessions import StringSession
 
 
-@Client.on_message(filters.command("upgrade") & filters.user([123456789]))  # Replace with your admin ID
+@Client.on_message(filters.command("upgrade") & filters.user(Config.ADMIN))  # Replace with your admin ID
 async def upgrade_user(client: Client, message: Message):
     parts = message.text.split()
     if len(parts) != 2 or not parts[1].isdigit():
@@ -14,13 +17,10 @@ async def upgrade_user(client: Client, message: Message):
     await db.update_user(target_id, {"is_premium": True})
     await message.reply(f"User `{target_id}` has been upgraded to Premium.")
 
-from pyrogram import filters
-from pyrogram.types import Message
-from pyromod.exceptions import ListenerTimeout
-from telethon.sessions import StringSession
-from telethon import TelegramClient
 
-@bot.on_message(filters.command("add_account") & filters.private)
+
+
+@Client.on_message(filters.command("add_account") & filters.private)
 async def add_account_handler(client: Client, message: Message):
     user_id = message.from_user.id
     user = await db.get_user(user_id)
