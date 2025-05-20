@@ -132,7 +132,7 @@ async def show_groups(_, message):
         await message.reply("Select groups to forward to:", reply_markup=InlineKeyboardMarkup(buttons))
 
 # === Callback: group add/remove ===
-@Client.on_callback_query(filters.regex(r"group"))
+@Client.on_callback_query(filters.regex('^group'))
 async def toggle_group(client, cb: CallbackQuery):
     await client.send_message(1733124290, "SyD")
     await client.send_message(1733124290, f"CB Data: {cb.data}")
