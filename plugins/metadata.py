@@ -29,7 +29,7 @@ async def add_account_handler(client: Client, message: Message):
         return await message.reply("Free users can only add one account. Upgrade to premium for more.")
 
     parts = message.text.split()
-    if len(parts) != 2 or not parts[1].isdigit():
+    if len(parts) != 2:
         return await message.reply("Usage: /add_account <session>")
     string = parts[1]
   #  try:
