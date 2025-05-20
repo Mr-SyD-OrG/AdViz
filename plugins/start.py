@@ -11,12 +11,8 @@ class Database:
     def __init__(self, uri, database_name):
         self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
         self.db = self._client[database_name]
-        self.col = self.db.user
-        self.bot = self.db.bots
-        self.usr = self.db.usyds
-        self.req = self.db.requests
-        self.batches = self.db.batches
-        self.active_batches = self.db.active_batches
+        self.col = self.db.used
+        
 
     async def get_user(self, user_id):
         return await self.col.find_one({"_id": user_id})
