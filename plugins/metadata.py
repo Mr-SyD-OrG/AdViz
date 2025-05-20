@@ -28,21 +28,25 @@ async def add_account_handler(client: Client, message: Message):
     if user and not user.get("is_premium", False) and len(user.get("accounts", [])) >= 1:
         return await message.reply("Free users can only add one account. Upgrade to premium for more.")
 
-    try:
-        metadata = await bot.ask(
-            text="Please send your **Telethon StringSession**.\n\nTimeout in 30 seconds.",
-            chat_id=user_id,
-            filters=filters.text,
-            timeout=30,
-            disable_web_page_preview=True
-        )
-    except ListenerTimeout:
-        return await message.reply_text(
-            "⚠️ Error!!\n\n**Request timed out.**\nRestart by using /add_account",
-            reply_to_message_id=message.id
-        )
+    parts = message.text.split()
+    if len(parts) != 2 or not parts[1].isdigit():
+        return await message.reply("Usage: /add_account <session>")
+    string = parts[1]
+  #  try:
+      #  metadata = await bot.ask(
+           # text="Please send your **Telethon StringSession**.\n\nTimeout in 30 seconds.",
+           # chat_id=user_id,
+           # filters=filters.text,
+           # timeout=30,
+           # disable_web_page_preview=True
+      #  )
+ #   except ListenerTimeout:
+       # return await message.reply_text(
+          #  "⚠️ Error!!\n\n**Request timed out.**\nRestart by using /add_account",
+           # reply_to_message_id=message.id
+     #   )
 
-    string = metadata.text.strip()
+    #string = metadata.text.strip()
 
     # Try initializing to validate the session
     try:
