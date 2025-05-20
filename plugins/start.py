@@ -69,7 +69,7 @@ async def run_forwarding(client, message):
     clients = []
     for acc in user["accounts"]:
         session = StringSession(acc["session"])
-        tele_client = TelegramClient(session, API_ID, API_HASH)
+        tele_client = TelegramClient(session, Config.API_ID, Config.API_HASH)
         await tele_client.start()
         clients.append(tele_client)
     sessions[user_id] = clients
