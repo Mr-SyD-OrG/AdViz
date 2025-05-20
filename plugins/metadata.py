@@ -8,6 +8,8 @@ from telethon.sessions import StringSession
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 import asyncio
 
+API_HASH = Config.API_HASH
+API_ID = Config.API_ID
 
 @Client.on_message(filters.command("text") & filters.private)
 async def handle_text_command(client: Client, message: Message):
