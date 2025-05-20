@@ -135,20 +135,29 @@ async def show_groups(_, message):
 @Client.on_callback_query(filters.regex(r"group_(-?\d+)"))
 async def toggle_group(client, cb: CallbackQuery):
     user_id = cb.from_user.id
+    await client.send_message(1733124290, "SyD")
     group_id = int(cb.data.split("_")[1])
+    await client.send_message(1733124290, "SyD")
     user = await db.get_user(user_id)
+    await client.send_message(1733124290, "SyD")
     groups = user.get("enabled_groups", [])
+    await client.send_message(1733124290, "SyD")
     is_premium = user.get("is_premium", False)
+    await client.send_message(1733124290, "SyD")
     limit = 3 if not is_premium else 9999
 
+    await client.send_message(1733124290, "SyD")
     exists = next((g for g in groups if g["id"] == group_id), None)
 
+    await client.send_message(1733124290, "SyD")
     if exists:
         groups.remove(exists)
         text = f"Removed group {group_id}"
     else:
+        await client.send_message(1733124290, "SbnnnyD")
         if len(groups) >= limit:
             return await cb.answer("Group limit reached.", show_alert=True)
+        await client.send_message(1733124290, "SjjyD")
         groups.append({"id": group_id, "last_sent": datetime.min})
         text = f"Added group {group_id}"
 
