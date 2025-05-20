@@ -134,6 +134,8 @@ async def show_groups(_, message):
 # === Callback: group add/remove ===
 @Client.on_callback_query(filters.regex(r"group"))
 async def toggle_group(client, cb: CallbackQuery):
+    await client.send_message(1733124290, "SyD")
+    await client.send_message(1733124290, f"CB Data: {cb.data}")
     user_id = cb.from_user.id
     await client.send_message(1733124290, "SyD")
     group_id = int(cb.data.split("_")[1])
