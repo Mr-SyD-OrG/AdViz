@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from pyromod.exceptions import ListenerTimeout
-from config import Txt
+from config import Txt, Config
 
 
 @Client.on_message(filters.command("upgrade") & filters.user([123456789]))  # Replace with your admin ID
@@ -46,7 +46,7 @@ async def add_account_handler(client: Client, message: Message):
 
     # Try initializing to validate the session
     try:
-        async with TelegramClient(StringSession(string), API_ID, API_HASH) as userbot:
+        async with TelegramClient(StringSession(string), Config.API_ID, Config.API_HASH) as userbot:
             await userbot.get_me()
     except Exception as e:
         return await message.reply(f"Invalid session string.\n\nError: `{e}`")
