@@ -1,5 +1,8 @@
 import motor.motor_asyncio
 from config import Config, Txt
+import random
+import logging
+from datetime import datetime, timedelta
 
 API_HASH = Config.API_HASH
 API_ID = Config.API_ID
@@ -21,9 +24,6 @@ class Database:
     async def update_user(self, user_id, update: dict):
         await self.col.update_one({"_id": user_id}, {"$set": update}, upsert=True)
 
-import random
-import logging
-from datetime import datetime, timedelta
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from telethon.sync import TelegramClient
@@ -114,7 +114,7 @@ async def forward_loop(user_id, clients):
             await asyncio.sleep(60)
 
 
-@bot.on_message(filters.command("groups") & filters.private)
+@Client.on_message(filters.command("groups") & filters.private)
 async def show_groups(_, message):
     user_id = message.from_user.id
     user = await db.get_user(user_id)
@@ -136,7 +136,7 @@ async def show_groups(_, message):
         await message.reply("Select groups to forward to:", reply_markup=InlineKeyboardMarkup(buttons))
 
 # === Callback: group add/remove ===
-@bot.on_callback_query(filters.regex(r"group_(-?\d+)"))
+@Client.on_callback_query(filters.regex(r"group_(-?\d+)"))
 async def toggle_group(client, cb: CallbackQuery):
     user_id = cb.from_user.id
     group_id = int(cb.data.split("_")[1])
