@@ -76,6 +76,9 @@ async def run_forwarding(client, message):
     if not user or not user.get("accounts"):
         return await message.reply("No userbot account found. Use /add_account first.")
 
+    if user.get("enabled", False):
+        return await message.reply("Forwarding already running. Use /stop to end it before starting again.")
+
     await message.reply("Starting...")
 
     is_premium = user.get("is_premium", False)
