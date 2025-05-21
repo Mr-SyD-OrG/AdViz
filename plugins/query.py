@@ -69,7 +69,7 @@ async def cb_handler(client, query: CallbackQuery):
         await show_groups_for_account(client, query.message, user_id, index)
 
     # === Go Back ===
-        elif data == "back_to_accounts":
+    elif data == "back_to_accounts":
         user = await db.get_user(query.from_user.id)
         accounts = user.get("accounts", [])
         buttons = []
