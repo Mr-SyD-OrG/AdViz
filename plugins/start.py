@@ -21,7 +21,7 @@ class Database:
         await self.col.update_one({"_id": user_id}, {"$set": update}, upsert=True)
 
 from pyrogram import Client, filters, enums
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
 from telethon.sync import TelegramClient
 from telethon.sessions import StringSession
 
@@ -115,25 +115,33 @@ async def forward_loop(user_id, clients):
             await asyncio.sleep(60)
 
 
+
 @Client.on_message(filters.command("groups") & filters.private)
-async def show_groups(_, message):
+async def show_accounts(client: Client, message: Message):
     user_id = message.from_user.id
     user = await db.get_user(user_id)
+
     if not user or not user.get("accounts"):
-        return await message.reply("Add an account first using /add_account")
+        return await message.reply("Please add an account first using /add_account")
 
-    session = StringSession(user["accounts"][0]["session"])
-    async with TelegramClient(session, API_ID, API_HASH) as client:
-        dialogs = await client.get_dialogs()
-        buttons = []
-        for d in dialogs:
-            if d.is_group or d.is_channel:
-                buttons.append(
-                    [InlineKeyboardButton(d.name, callback_data=f"group_{d.id}")]
-                )
-        if not buttons:
-            return await message.reply("No groups found.")
+    accounts = user["accounts"]
+    buttons = []
 
-        await message.reply("Select groups to forward to:", reply_markup=InlineKeyboardMarkup(buttons))
+    # Load names from each session
+    for i, acc in enumerate(accounts):
+        try:
+            async with TelegramClient(StringSession(acc["session"]), Config.API_ID, Config.API_HASH) as userbot:
+                me = await userbot.get_me()
+                acc_name = me.first_name or me.username or f"Account {i+1}"
+        except Exception:
+            acc_name = f"Account {i+1} (invalid)"
+        
+        buttons.append([
+            InlineKeyboardButton(acc_name, callback_data=f"choose_account_{i}")
+        ])
 
-# === Callback: group add/remove ===
+    await message.reply(
+        "Choose an account to manage groups:",
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
+
