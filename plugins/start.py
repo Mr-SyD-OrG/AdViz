@@ -79,8 +79,7 @@ async def run_forwarding(client, message):
     await message.reply("Starting...")
 
     is_premium = user.get("is_premium", False)
-    intervals = user.get("intervals", {})
-
+    
     clients = []
     user_groups = []
 
@@ -108,8 +107,7 @@ async def run_forwarding(client, message):
     for i, tele_client in enumerate(clients):
         if i > 0:
             await asyncio.sleep(600)  # 10 minute delay between userbots
-
-        await message.reply("check")
+ 
         groups = user_groups[i]
 
         while True:
@@ -117,7 +115,6 @@ async def run_forwarding(client, message):
                 break  # stop if disabled
 
             try:
-                await message.reply("check")
                 last_msg = (await tele_client.get_messages("me", limit=1))[0]
             except Exception as e:
                 print(f"Failed to fetch message: {e}")
@@ -125,10 +122,9 @@ async def run_forwarding(client, message):
                 continue
 
             for grp in groups:
-                await message.reply("chechhajk")
                 gid = grp["id"]
                 last_sent = grp.get("last_sent", datetime.min)
-                interval = intervals.get(str(gid), 7 if not is_premium else 1)  # default 2hr or 3min
+                interval = 7200 if not is_premium else user.get("interval", 300)    # default 2hr or 5min
 
                 if datetime.now() - last_sent >= timedelta(seconds=interval):
                     try:
@@ -178,3 +174,22 @@ async def show_accounts(client: Client, message: Message):
         reply_markup=InlineKeyboardMarkup(buttons)
     )
 
+@Client.on_message(filters.command("setinterval") & filters.private)
+async def set_interval(client, message):
+    user_id = message.from_user.id
+    user = await db.get_user(user_id)
+
+    if not user or not user.get("is_premium", False):
+        return await message.reply("Only premium users can set custom intervals.")
+
+    parts = message.text.split()
+    if len(parts) != 2:
+        return await message.reply("Usage: /setinterval <seconds>")
+
+    try:
+        seconds = int(parts[1])
+    except ValueError:
+        return await message.reply("Interval must be a number in seconds.")
+
+    await db.col.update_one({"_id": user_id}, {"$set": {"interval": seconds}})
+    await message.reply(f"Custom interval set to {seconds} seconds for all groups.")
