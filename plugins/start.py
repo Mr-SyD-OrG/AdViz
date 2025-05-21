@@ -66,12 +66,17 @@ async def run_forwarding(client, message):
         return await message.reply("No groups selected. Use /groups to add some.")
 
     # Start sessions
+    await message.reply("check")
     clients = []
     for acc in user["accounts"]:
+        await message.reply("check")
         session = StringSession(acc["session"])
+        await message.reply("check")
         tele_client = TelegramClient(session, Config.API_ID, Config.API_HASH)
         await tele_client.start()
+        await message.reply("check")
         clients.append(tele_client)
+    await message.reply("check")
     sessions[user_id] = clients
     await db.update_user(user_id, {"enabled": True})
     await message.reply("Forwarding started.")
