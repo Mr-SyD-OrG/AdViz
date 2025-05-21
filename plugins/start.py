@@ -125,7 +125,7 @@ async def run_forwarding(client, message):
             for grp in groups:
                 gid = grp["id"]
                 last_sent = grp.get("last_sent", datetime.min)
-                interval = intervals.get(str(gid), 7200 if not is_premium else 180)  # default 2hr or 3min
+                interval = intervals.get(str(gid), 7 if not is_premium else 1)  # default 2hr or 3min
 
                 if datetime.now() - last_sent >= timedelta(seconds=interval):
                     try:
