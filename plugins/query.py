@@ -89,7 +89,7 @@ async def cb_handler(client, query: CallbackQuery):
     
     elif data.startswith("group_"):
         group_id = int(data.split("_", 1)[1])
-                await client.send_message(1733124290, "SyD")
+        await client.send_message(1733124290, "SyD")
         user = await db.get_user(user_id)
         await client.send_message(1733124290, "SyD")
         groups = user.get("enabled_groups", [])
