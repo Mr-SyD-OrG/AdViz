@@ -1,5 +1,6 @@
 import shutil
 import time
+from datetime import datetime, timedelta
 from pyrogram import Client
 from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from config import Config, Txt
@@ -89,9 +90,7 @@ async def cb_handler(client, query: CallbackQuery):
     
     elif data.startswith("group_"):
         group_id = int(data.split("_", 1)[1])
-        await client.send_message(1733124290, "SyD")
         user = await db.get_user(query.from_user.id)
-        await client.send_message(1733124290, "SyD")
         groups = user.get("enabled_groups", [])
         await client.send_message(1733124290, "SyD")
         is_premium = user.get("is_premium", False)
