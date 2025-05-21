@@ -57,6 +57,18 @@ async def start(client, message):
 
 
 
+@Client.on_message(filters.command("stop") & filters.private)
+async def stop_forwarding(client, message):
+    user_id = message.from_user.id
+    await db.update_user(user_id, {"enabled": False})
+    await message.reply("Forwarding has been stopped.")
+
+    if user_id in sessions:
+        for tele_client in sessions[user_id]:
+            await tele_client.disconnect()
+        sessions.pop(user_id)
+
+    await message.reply("Forwarding has been stopped.")
 @Client.on_message(filters.command("run") & filters.private)
 async def run_forwarding(client, message):
     user_id = message.from_user.id
@@ -64,47 +76,65 @@ async def run_forwarding(client, message):
     if not user or not user.get("accounts"):
         return await message.reply("No userbot account found. Use /add_account first.")
 
-    if not user.get("enabled_groups"):
-        return await message.reply("No groups selected. Use /groups to add some.")
+    await message.reply("Starting...")
 
-    # Start sessions
-    await message.reply("check")
-    clients = []
-    for acc in user["accounts"]:
-        await message.reply("check")
-        session = StringSession(acc["session"])
-        await message.reply("check")
-        tele_client = TelegramClient(session, Config.API_ID, Config.API_HASH)
-        await tele_client.start()
-        await message.reply("check")
-        clients.append(tele_client)
-    await message.reply("check")
-    sessions[user_id] = clients
-    await db.update_user(user_id, {"enabled": True})
-    await message.reply("Forwarding started.")
-    groups = user.get("enabled_groups", [])
     is_premium = user.get("is_premium", False)
     intervals = user.get("intervals", {})
 
-    for i, client in enumerate(clients):
+    clients = []
+    user_groups = []
+
+    for acc in user["accounts"]:
+        session = StringSession(acc["session"])
+        tele_client = TelegramClient(session, Config.API_ID, Config.API_HASH)
+        await tele_client.start()
+        clients.append(tele_client)
+
+        # Get the account's own user ID to fetch groups from group collection
+        me = await tele_client.get_me()
+        session_user_id = me.id
+
+        group_data = await db.group.find_one({"_id": session_user_id}) or {"groups": []}
+        groups = group_data["groups"]
+        user_groups.append(groups)
+
+    if not any(user_groups):
+        return await message.reply("No groups selected. Use /groups to add some.")
+
+    sessions[user_id] = clients
+    await db.update_user(user_id, {"enabled": True})
+    await message.reply("Forwarding started.")
+
+    for i, tele_client in enumerate(clients):
         if i > 0:
-            await asyncio.sleep(600)  # 10 minutes delay per extra userbot
+            await asyncio.sleep(600)  # 10 minute delay between userbots
+
+        groups = user_groups[i]
 
         while True:
             if not (await db.get_user(user_id)).get("enabled", False):
                 break  # stop if disabled
 
-            last_msg = (await client.get_messages("me", limit=1))[0]
+            try:
+                last_msg = (await tele_client.get_messages("me", limit=1))[0]
+            except Exception as e:
+                print(f"Failed to fetch message: {e}")
+                await asyncio.sleep(60)
+                continue
+
             for grp in groups:
                 gid = grp["id"]
                 last_sent = grp.get("last_sent", datetime.min)
-                interval = intervals.get(str(gid), 7 if not is_premium else 3)
+                interval = intervals.get(str(gid), 7200 if not is_premium else 180)  # default 2hr or 3min
 
                 if datetime.now() - last_sent >= timedelta(seconds=interval):
                     try:
-                        await client.send_message(gid, last_msg)
+                        await tele_client.send_message(gid, last_msg)
                         grp["last_sent"] = datetime.now()
-                        await db.col.update_one({"_id": user_id}, {"$set": {"enabled_groups": groups}})
+                        await db.group.update_one(
+                            {"_id": (await tele_client.get_me()).id},
+                            {"$set": {"groups": groups}}
+                        )
                     except Exception as e:
                         print(f"Error sending to {gid}: {e}")
             await asyncio.sleep(60)
