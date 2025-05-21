@@ -21,6 +21,15 @@ class Database:
 
     async def update_user(self, user_id, update: dict):
         await self.col.update_one({"_id": user_id}, {"$set": update}, upsert=True)
+    
+    async def get_all_users(self):
+        return self.col.find({})  # returns an async cursor
+
+    async def delete_user(self, user_id):
+        await self.col.delete_one({"_id": user_id})
+
+    async def total_users_count(self):
+        return await self.col.count_documents({})
 
 from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
