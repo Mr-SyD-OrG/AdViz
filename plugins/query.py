@@ -39,7 +39,7 @@ async def show_groups_for_account(client, message, user_id, account_index):
         for d in dialogs:
             if d.is_group or d.is_channel:
                 is_enabled = "✅" if d.id in enabled_ids else "❌"
-                title = f"{is_enabled} {d.name}"
+                title = f"{d.name} {is_enabled}"
                 buttons.append([
                     InlineKeyboardButton(title, callback_data=f"group_{d.id}_{account_index}")
                 ])
@@ -98,40 +98,39 @@ async def cb_handler(client, query: CallbackQuery):
         )
 
     # === Group Selection ===
-    elif data.startswith("group_"):
-        try:
-            group_id, acc_index = map(int, data.split("_")[1:])
-        except:
-            return await query.answer("Invalid data", show_alert=True)
+        elif data.startswith("group_"):
+        parts = data.split("_")
+        group_id = int(parts[1])
+        account_index = int(parts[2])
 
-        session_str = user["accounts"][acc_index]["session"]
+        user = await db.get_user(query.from_user.id)
+        session_str = user["accounts"][account_index]["session"]
 
-        # Get the userbot's own user ID (session user ID)
-        async with TelegramClient(StringSession(session_str), Config.API_ID, Config.API_HASH) as userbot:
-            me = await userbot.get_me()
+        async with TelegramClient(StringSession(session_str), Config.API_ID, Config.API_HASH) as tg_client:
+            me = await tg_client.get_me()
             session_user_id = me.id
 
-        # Use session_user_id to load/store group selections
-        group_data = await db.usr.find_one({"_id": session_user_id}) or {"_id": session_user_id, "groups": []}
-        group_list = group_data.get("groups", [])
+        group_data = await db.group.find_one({"_id": session_user_id}) or {"_id": session_user_id, "groups": []}
+        group_list = group_data["groups"]
 
         exists = next((g for g in group_list if g["id"] == group_id), None)
-        is_premium = user.get("is_premium", False)
-        limit = 3 if not is_premium else 9999
 
         if exists:
             group_list.remove(exists)
+            status = "❌"
+            message = "Group removed"
         else:
+            is_premium = user.get("is_premium", False)
+            limit = 3 if not is_premium else 1000
             if len(group_list) >= limit:
-                return await query.answer("⚠️ Group limit reached.", show_alert=True)
+                return await query.answer("Group limit reached.", show_alert=True)
             group_list.append({"id": group_id, "last_sent": datetime.min})
+            status = "✅"
+            message = "Group added"
 
-        # Update DB
-        await db.usr.update_one(
-            {"_id": session_user_id},
-            {"$set": {"groups": group_list}},
-            upsert=True
-        )
+        await db.group.update_one({"_id": session_user_id}, {"$set": {"groups": group_list}}, upsert=True)
+        await query.answer(message + " " + status, show_alert=False)
+
 
         await show_groups_for_account(client, query.message, user_id, acc_index)
 
