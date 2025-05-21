@@ -61,7 +61,6 @@ async def start(client, message):
 async def stop_forwarding(client, message):
     user_id = message.from_user.id
     await db.update_user(user_id, {"enabled": False})
-    await message.reply("Forwarding has been stopped.")
 
     if user_id in sessions:
         for tele_client in sessions[user_id]:
@@ -69,6 +68,7 @@ async def stop_forwarding(client, message):
         sessions.pop(user_id)
 
     await message.reply("Forwarding has been stopped.")
+    
 @Client.on_message(filters.command("run") & filters.private)
 async def run_forwarding(client, message):
     user_id = message.from_user.id
@@ -109,6 +109,7 @@ async def run_forwarding(client, message):
         if i > 0:
             await asyncio.sleep(600)  # 10 minute delay between userbots
 
+        await message.reply("check")
         groups = user_groups[i]
 
         while True:
@@ -116,6 +117,7 @@ async def run_forwarding(client, message):
                 break  # stop if disabled
 
             try:
+                await message.reply("check")
                 last_msg = (await tele_client.get_messages("me", limit=1))[0]
             except Exception as e:
                 print(f"Failed to fetch message: {e}")
@@ -123,21 +125,27 @@ async def run_forwarding(client, message):
                 continue
 
             for grp in groups:
+                await message.reply("chechhajk")
                 gid = grp["id"]
                 last_sent = grp.get("last_sent", datetime.min)
                 interval = intervals.get(str(gid), 7 if not is_premium else 1)  # default 2hr or 3min
 
                 if datetime.now() - last_sent >= timedelta(seconds=interval):
                     try:
+                        await message.reply("check")
                         await tele_client.send_message(gid, last_msg)
                         grp["last_sent"] = datetime.now()
+                        await message.reply("check")
                         await db.group.update_one(
                             {"_id": (await tele_client.get_me()).id},
                             {"$set": {"groups": groups}}
                         )
+                        await message.reply("check")
                     except Exception as e:
                         print(f"Error sending to {gid}: {e}")
+            await message.reply("check")
             await asyncio.sleep(60)
+            await message.reply("check")
 
 
 
