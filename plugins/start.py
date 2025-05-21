@@ -80,13 +80,6 @@ async def run_forwarding(client, message):
     sessions[user_id] = clients
     await db.update_user(user_id, {"enabled": True})
     await message.reply("Forwarding started.")
-
-    # Start the forward loop
-    asyncio.create_task(forward_loop(user_id, clients))
-
-# === Forwarding loop ===
-async def forward_loop(user_id, clients):
-    user = await db.get_user(user_id)
     groups = user.get("enabled_groups", [])
     is_premium = user.get("is_premium", False)
     intervals = user.get("intervals", {})
