@@ -9,6 +9,36 @@ import random
 import psutil
 from info import AUTH_CHANNEL
 from helper.utils import humanbytes
+from telethon.sessions import StringSession
+from telethon import TelegramClient
+from datetime import datetime
+
+
+    
+async def show_groups_for_account(client, message, user_id, account_index):
+    user = await db.get_user(user_id)
+    session_str = user["accounts"][account_index]["session"]
+
+    async with TelegramClient(StringSession(session_str), Config.API_ID, Config.API_HASH) as tg_client:
+        me = await tg_client.get_me()
+        session_user_id = me.id
+
+        group_data = await db.usr.find_one({"_id": session_user_id}) or {}
+        enabled_ids = {g["id"] for g in group_data.get("groups", [])}
+
+        dialogs = await tg_client.get_dialogs()
+        buttons = []
+
+        for d in dialogs:
+            if d.is_group or d.is_channel:
+                is_enabled = "✅" if d.id in enabled_ids else "❌"
+                title = f"{is_enabled} {d.name}"
+                buttons.append([
+                    InlineKeyboardButton(title, callback_data=f"group_{d.id}_{account_index}")
+                ])
+
+        buttons.append([InlineKeyboardButton("◀️ Go Back", callback_data="back_to_accounts")])
+        await message.reply("Select groups to forward to:", reply_markup=InlineKeyboardMarkup(buttons))
 
 
 @Client.on_callback_query()
@@ -32,6 +62,59 @@ async def cb_handler(client, query: CallbackQuery):
                 InlineKeyboardButton('Hᴇʟᴩ ❗', callback_data='help')
             ]])
         )
+
+    elif data.startswith("choose_account_"):
+        index = int(data.split("_")[-1])
+        await query.message.delete()
+        await show_groups_for_account(client, query.message, user_id, index)
+
+    # === Go Back ===
+    elif data == "back_to_accounts":
+        accounts = user.get("accounts", [])
+        buttons = [
+            [InlineKeyboardButton(f"Account {i+1}", callback_data=f"choose_account_{i}")]
+            for i in range(len(accounts))
+        ]
+        return await query.message.edit_text("Choose an account:", reply_markup=InlineKeyboardMarkup(buttons))
+
+    # === Group Selection ===
+    elif data.startswith("group_"):
+        try:
+            group_id, acc_index = map(int, data.split("_")[1:])
+        except:
+            return await query.answer("Invalid data", show_alert=True)
+
+        session_str = user["accounts"][acc_index]["session"]
+
+        # Get the userbot's own user ID (session user ID)
+        async with TelegramClient(StringSession(session_str), Config.API_ID, Config.API_HASH) as userbot:
+            me = await userbot.get_me()
+            session_user_id = me.id
+
+        # Use session_user_id to load/store group selections
+        group_data = await db.usr.find_one({"_id": session_user_id}) or {"_id": session_user_id, "groups": []}
+        group_list = group_data.get("groups", [])
+
+        exists = next((g for g in group_list if g["id"] == group_id), None)
+        is_premium = user.get("is_premium", False)
+        limit = 3 if not is_premium else 9999
+
+        if exists:
+            group_list.remove(exists)
+        else:
+            if len(group_list) >= limit:
+                return await query.answer("⚠️ Group limit reached.", show_alert=True)
+            group_list.append({"id": group_id, "last_sent": datetime.min})
+
+        # Update DB
+        await db.usr.update_one(
+            {"_id": session_user_id},
+            {"$set": {"groups": group_list}},
+            upsert=True
+        )
+
+        await show_groups_for_account(client, query.message, user_id, acc_index)
+
     elif data == "help":
 
         await query.message.edit_media(
@@ -88,7 +171,7 @@ async def cb_handler(client, query: CallbackQuery):
         )
 
     
-    elif data.startswith("group_"):
+    elif data.startswith("grop_"):
         group_id = int(data.split("_", 1)[1])
         user = await db.get_user(query.from_user.id)
         groups = user.get("enabled_groups", [])
