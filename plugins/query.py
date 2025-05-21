@@ -25,8 +25,12 @@ async def show_groups_for_account(client, message, user_id, account_index):
         await client.send_message(1733124290, "SyD")
         session_user_id = me.id
 
-        group_data = await db.usr.find_one({"_id": session_user_id}) or {}
+        await client.send_message(1733124290, "SyD")
+        group_data = await db.group.find_one({"_id": session_user_id}) or {}
+        await client.send_message(1733124290, "SyD")
         enabled_ids = {g["id"] for g in group_data.get("groups", [])}
+
+        await client.send_message(1733124290, "SyD")
 
         dialogs = await tg_client.get_dialogs()
         await client.send_message(1733124290, "SyD")
