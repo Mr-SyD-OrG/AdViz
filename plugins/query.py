@@ -69,13 +69,25 @@ async def cb_handler(client, query: CallbackQuery):
         await show_groups_for_account(client, query.message, user_id, index)
 
     # === Go Back ===
-    elif data == "back_to_accounts":
+        elif data == "back_to_accounts":
+        user = await db.get_user(query.from_user.id)
         accounts = user.get("accounts", [])
-        buttons = [
-            [InlineKeyboardButton(f"Account {i+1}", callback_data=f"choose_account_{i}")]
-            for i in range(len(accounts))
-        ]
-        return await query.message.edit_text("Choose an account:", reply_markup=InlineKeyboardMarkup(buttons))
+        buttons = []
+
+        for i, acc in enumerate(accounts):
+            try:
+                async with TelegramClient(StringSession(acc["session"]), Config.API_ID, Config.API_HASH) as userbot:
+                    me = await userbot.get_me()
+                    acc_name = me.first_name or me.username or f"Account {i+1}"
+            except Exception:
+                acc_name = f"Account {i+1} (invalid)"
+
+            buttons.append([InlineKeyboardButton(acc_name, callback_data=f"choose_account_{i}")])
+
+        await query.message.edit_text(
+            "Choose an account:",
+            reply_markup=InlineKeyboardMarkup(buttons)
+        )
 
     # === Group Selection ===
     elif data.startswith("group_"):
