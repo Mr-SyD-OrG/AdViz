@@ -87,12 +87,37 @@ async def cb_handler(client, query: CallbackQuery):
         )
 
     
-    elif data == 'userbot':
-        userBot = await db.get_user_bot(query.from_user.id)
+    elif data.startswith("group_"):
+        group_id = int(data.split("_", 1)[1])
+                await client.send_message(1733124290, "SyD")
+        user = await db.get_user(user_id)
+        await client.send_message(1733124290, "SyD")
+        groups = user.get("enabled_groups", [])
+        await client.send_message(1733124290, "SyD")
+        is_premium = user.get("is_premium", False)
+        await client.send_message(1733124290, "SyD")
+        limit = 3 if not is_premium else 9999
 
-        text = f"Name: {userBot['name']}\nUserName: @{userBot['username']}\n UserId: {userBot['user_id']}"
+        await client.send_message(1733124290, "SyD")
+        exists = next((g for g in groups if g["id"] == group_id), None)
 
-        await query.message.edit(text=text, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('❌ ʀᴇᴍᴏᴠᴇ ❌', callback_data='rmuserbot')], [InlineKeyboardButton('✘ ᴄʟᴏsᴇ ✘', callback_data='close')]]))
+        await client.send_message(1733124290, "SyD")
+        if exists:
+                groups.remove(exists)
+                text = f"Removed group {group_id}"
+        else:
+                await client.send_message(1733124290, "SbnnnyD")
+                if len(groups) >= limit:
+                        return await cb.answer("Group limit reached.", show_alert=True)
+                await client.send_message(1733124290, "SjjyD")
+                groups.append({"id": group_id, "last_sent": datetime.min})
+                text = f"Added group {group_id}"
+
+        await db.update_user(user_id, {"enabled_groups": groups})
+        await query.answer(text, show_alert=False)
+        await query.message.edit_text("Group list updated.")
+
+        #await query.message.edit(text=text, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('❌ ʀᴇᴍᴏᴠᴇ ❌', callback_data='rmuserbot')], [InlineKeyboardButton('✘ ᴄʟᴏsᴇ ✘', callback_data='close')]]))
 
     elif data == 'rmuserbot':
         try:
