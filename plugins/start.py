@@ -103,7 +103,7 @@ async def forward_loop(user_id, clients):
             for grp in groups:
                 gid = grp["id"]
                 last_sent = grp.get("last_sent", datetime.min)
-                interval = intervals.get(str(gid), 7200 if not is_premium else 3600)
+                interval = intervals.get(str(gid), 7 if not is_premium else 3)
 
                 if datetime.now() - last_sent >= timedelta(seconds=interval):
                     try:
