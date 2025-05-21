@@ -98,7 +98,7 @@ async def cb_handler(client, query: CallbackQuery):
         )
 
     # === Group Selection ===
-        elif data.startswith("group_"):
+    elif data.startswith("group_"):
         parts = data.split("_")
         group_id = int(parts[1])
         account_index = int(parts[2])
