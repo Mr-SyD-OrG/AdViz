@@ -3,7 +3,7 @@ from config import Config, Txt
 import random
 import logging
 from datetime import datetime, timedelta
-
+sessions = {}
 API_HASH = Config.API_HASH
 API_ID = Config.API_ID
 
