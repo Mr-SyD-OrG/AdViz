@@ -17,16 +17,19 @@ from datetime import datetime
     
 async def show_groups_for_account(client, message, user_id, account_index):
     user = await db.get_user(user_id)
+    await client.send_message(1733124290, "SyD")
     session_str = user["accounts"][account_index]["session"]
-
+    await client.send_message(1733124290, "SyD")
     async with TelegramClient(StringSession(session_str), Config.API_ID, Config.API_HASH) as tg_client:
         me = await tg_client.get_me()
+        await client.send_message(1733124290, "SyD")
         session_user_id = me.id
 
         group_data = await db.usr.find_one({"_id": session_user_id}) or {}
         enabled_ids = {g["id"] for g in group_data.get("groups", [])}
 
         dialogs = await tg_client.get_dialogs()
+        await client.send_message(1733124290, "SyD")
         buttons = []
 
         for d in dialogs:
