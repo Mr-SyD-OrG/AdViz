@@ -8,6 +8,7 @@ from config import Config
 from aiohttp import web
 from plugins.web_support import web_server
 from pytz import timezone
+from plugins.start import db
 from datetime import datetime
 import asyncio
 import os
@@ -15,12 +16,6 @@ from threading import Thread
 from time import sleep
 import pyromod
 
-
-if not os.path.exists("received_files"):
-    os.makedirs("received_files")
-
-CHANNELS = ["-1002464733363", "-1002429058090", "-1002433450358"]
-MSYD = -1002377676305
 
 logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
@@ -68,6 +63,10 @@ class Bot(Client):
             except:
                 pass
 
+        for user in db.col.find({"enabled": True}, {"_id": 1}):
+            user_id = user["_id"]
+            await self.send_message(user_id, "Restarting Messaging")
+            await start_forwarding(self, user_id)
         if Config.LOG_CHANNEL:
             try:
                 curr = datetime.now(timezone("Asia/Kolkata"))
