@@ -155,19 +155,26 @@ async def run_forwarding(client, message):
 
             for grp in groups:
                 gid = grp["id"]
-                total_sleep = 7200 if not is_premium else user.get("interval", 300)    # default 2hr or 5min
+                interval = 7200 if not is_premium else user.get("interval", 300)
+                last_sent = grp.get("last_sent", datetime.min)
 
-                for _ in range(total_sleep // interval):
-                    if not (await db.get_user(user_id)).get("enabled", False):
-                        await message.reply("Stopped!")
-                        break
-                    await asyncio.sleep(interval)
+                total_wait = interval - (datetime.now() - last_sent).total_seconds()
+                if total_wait > 0:
+                    # Wait total_wait seconds but check every 1 second if enabled
+                    for _ in range(int(total_wait)):
+                        if not (await db.get_user(user_id)).get("enabled", False):
+                            await client.send_message(user_id, "Stopped!")
+                            return
+                        await asyncio.sleep(1)
 
                 try:
-                   await tele_client.send_message(gid, last_msg)
+                    await tele_client.send_message(gid, last_msg)
+                    grp["last_sent"] = datetime.now()
+                    me = await tele_client.get_me()
+                    await db.group.update_one({"_id": me.id}, {"$set": {"groups": groups}})
                 except Exception as e:
                     print(f"Error sending to {gid}: {e}")
-            await message.reply("check")
+
             for _ in range(total_slep // interval):
                 if not (await db.get_user(user_id)).get("enabled", False):
                     await message.reply("Stopped!")
