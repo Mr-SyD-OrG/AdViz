@@ -86,7 +86,7 @@ async def stop_forwarding(client, message):
             await tele_client.disconnect()
         sessions.pop(user_id)
 
-    await message.reply("Forwarding has been stopped.")
+    await message.reply("Trying To Stop.")
     
 @Client.on_message(filters.command("run") & filters.private)
 async def run_forwarding(client, message):
