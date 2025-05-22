@@ -89,10 +89,7 @@ async def add_account_handler(client: Client, message: Message):
     if user and not user.get("is_premium", False) and len(user.get("accounts", [])) >= 1:
         return await message.reply("Free users can only add one account. Upgrade to premium for more.")
 
-    #parts = message.text.split()
-   # if len(parts) != 2:
-        #return await message.reply("Usage: /add_account <session>")
-    #string = parts[1]
+    
     try:
         metadata = await client.ask(
             text="Please send your **Telethon StringSession**.\n\nTimeout in 30 seconds.",
@@ -108,14 +105,14 @@ async def add_account_handler(client: Client, message: Message):
         )
 
     string = metadata.text.strip()
-
-    # Try initializing to validate the session
     try:
         async with TelegramClient(StringSession(string), Config.API_ID, Config.API_HASH) as userbot:
-            await userbot.get_me()
+            me = await userbot.get_me()
     except Exception as e:
         return await message.reply(f"Invalid session string.\n\nError: `{e}`")
-
+     existing_group = await db.group.find_one({"_id": me.id})
+    if existing_group:
+        return await message.reply("This account is already added.")
     # Save to DB
     if not user:
         user = {"_id": user_id, "accounts": []}
