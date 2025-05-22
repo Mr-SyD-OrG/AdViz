@@ -110,7 +110,7 @@ async def add_account_handler(client: Client, message: Message):
             me = await userbot.get_me()
     except Exception as e:
         return await message.reply(f"Invalid session string.\n\nError: `{e}`")
-     existing_group = await db.group.find_one({"_id": me.id})
+    existing_group = await db.group.find_one({"_id": me.id})
     if existing_group:
         return await message.reply("This account is already added.")
     # Save to DB
