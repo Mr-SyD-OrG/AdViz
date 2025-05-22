@@ -131,8 +131,8 @@ async def cb_handler(client, query: CallbackQuery):
         await db.group.update_one({"_id": session_user_id}, {"$set": {"groups": group_list}}, upsert=True)
         await query.answer(message + " " + status, show_alert=False)
 
-
-        await show_groups_for_account(client, query.message, user_id, acc_index)
+        await query.message.delete()
+        await show_groups_for_account(client, query.message, user_id, account_index)
 
     elif data == "help":
 
@@ -189,7 +189,27 @@ async def cb_handler(client, query: CallbackQuery):
             reply_markup=reply_markup
         )
 
-    
+    eliif data.startswith("choose_delete_"):
+        index = int(data.split("_")[-1])
+        user_id = query.from_user.id
+        user = await db.get_user(user_id)
+
+        if not user or index >= len(user.get("accounts", [])):
+            return await query.answer("Invalid selection.", show_alert=True)
+
+        account = user["accounts"].pop(index)
+        await db.col.update_one({"_id": user_id}, {"$set": {"accounts": user["accounts"]}})
+
+        try:
+            async with TelegramClient(StringSession(account["session"]), Config.API_ID, Config.API_HASH) as tg_client:
+                me = await tg_client.get_me()
+                await db.group.delete_one({"_id": me.id})
+        except:
+            pass
+
+        await query.edit_message_text("Account and its groups have been deleted.")
+
+
     elif data.startswith("grop_"):
         group_id = int(data.split("_", 1)[1])
         user = await db.get_user(query.from_user.id)
