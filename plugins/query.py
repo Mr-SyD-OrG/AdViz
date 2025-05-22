@@ -6,7 +6,7 @@ from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMa
 from config import Config, Txt
 from .start import db
 import random
-from telethon.tl.functions.channels import GetForumTopics
+from telethon.tl.functions.channels import GetForumTopicsRequest
 import psutil
 from helper.utils import humanbytes
 from telethon.sessions import StringSession
@@ -137,7 +137,7 @@ async def cb_handler(client, query: CallbackQuery):
                 await toggle_group_directly(tg_client, user, group_id, session_user_id, query, account_index)
             else:
                 try:
-                    topics = await tg_client(GetForumTopics(
+                    topics = await tg_client(GetForumTopicsRequest(
                         channel=entity,
                         offset_date=0,
                         offset_id=0,
