@@ -124,7 +124,7 @@ async def cb_handler(client, query: CallbackQuery):
         )
 
     # === Group Selection ===
-    elif data.startswith("group_"):
+        elif data.startswith("group_"):
         parts = data.split("_")
         group_id = int(parts[1])
         account_index = int(parts[2])
@@ -137,23 +137,37 @@ async def cb_handler(client, query: CallbackQuery):
             session_user_id = me.id
 
             entity = await tg_client.get_entity(group_id)
-            if getattr(entity, "megagroup", False) and getattr(entity, "has_linked_chat", False):
-                # Proceed normally (no topics)
+
+            # If group does not have forum (topic) enabled
+            if not getattr(entity, "forum", False):
                 await toggle_group_directly(tg_client, user, group_id, session_user_id, query, account_index)
             else:
-                # Group has topics — fetch and ask for selection
                 try:
-                    forums = await tg_client.get_dialogs(folder=group_id)
+                    topics = await tg_client(GetForumTopicsRequest(
+                        channel=entity,
+                        offset_date=0,
+                        offset_id=0,
+                        offset_topic=0,
+                        limit=100
+                    ))
+
                     topic_buttons = []
-                    for topic in forums:
-                        if getattr(topic.entity, "thread_id", None):
-                            topic_buttons.append([
-                                InlineKeyboardButton(topic.name, callback_data=f"topic_{group_id}_{account_index}_{topic.entity.id}")
-                            ])
-                    topic_buttons.append([InlineKeyboardButton("◀️ Go Back", callback_data=f"back_groups_{account_index}")])
+                    for topic in topics.topics:
+                        topic_buttons.append([
+                            InlineKeyboardButton(
+                                topic.title,
+                                callback_data=f"topic_{group_id}_{account_index}_{topic.id}"
+                            )
+                        ])
+                    topic_buttons.append([
+                        InlineKeyboardButton("◀️ Go Back", callback_data=f"back_groups_{account_index}")
+                    ])
                     await query.message.edit_text("Select a topic:", reply_markup=InlineKeyboardMarkup(topic_buttons))
+
                 except Exception as e:
-                    await query.answer("Failed to fetch topics.")
+                    print(f"Failed to fetch topics: {e}")
+                    await query.answer("Failed to fetch topics.", show_alert=True)
+
 
     elif data.startswith("topic_"):
         parts = data.split("_")
