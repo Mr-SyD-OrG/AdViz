@@ -98,7 +98,7 @@ async def run_forwarding(client, message):
     if user.get("enabled", False):
         return await message.reply("Forwarding already running. Use /stop to end it before starting again.")
 
-    await message.reply("Starting...")
+    syd = await message.reply("Starting...")
 
     is_premium = user.get("is_premium", False)
     
@@ -124,6 +124,7 @@ async def run_forwarding(client, message):
 
     sessions[user_id] = clients
     await db.update_user(user_id, {"enabled": True})
+    await syd.delete()
     await message.reply("Forwarding started.")
 
     for i, tele_client in enumerate(clients):
