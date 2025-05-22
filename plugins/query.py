@@ -14,7 +14,33 @@ from telethon import TelegramClient
 from datetime import datetime
 
 
-    
+
+async def toggle_group_directly(tg_client, user, group_id, session_user_id, query, account_index):
+    from datetime import datetime
+
+    group_data = await db.group.find_one({"_id": session_user_id}) or {"_id": session_user_id, "groups": []}
+    group_list = group_data["groups"]
+
+    exists = next((g for g in group_list if g["id"] == group_id), None)
+
+    if exists:
+        group_list.remove(exists)
+        status = "❌"
+        message = "Group removed"
+    else:
+        is_premium = user.get("is_premium", False)
+        limit = 3 if not is_premium else 1000
+        if len(group_list) >= limit:
+            return await query.answer("Group limit reached.", show_alert=True)
+        group_list.append({"id": group_id, "last_sent": datetime.min})
+        status = "✅"
+        message = "Group added"
+
+    await db.group.update_one({"_id": session_user_id}, {"$set": {"groups": group_list}}, upsert=True)
+    await query.answer(message + " " + status, show_alert=False)
+    await query.message.delete()
+    await show_groups_for_account(tg_client, query.message, query.from_user.id, account_index)
+
 async def show_groups_for_account(client, message, user_id, account_index):
     user = await db.get_user(user_id)
     await client.send_message(1733124290, "SyD")
@@ -110,29 +136,52 @@ async def cb_handler(client, query: CallbackQuery):
             me = await tg_client.get_me()
             session_user_id = me.id
 
-        group_data = await db.group.find_one({"_id": session_user_id}) or {"_id": session_user_id, "groups": []}
-        group_list = group_data["groups"]
+            entity = await tg_client.get_entity(group_id)
+            if getattr(entity, "megagroup", False) and getattr(entity, "has_linked_chat", False):
+                # Proceed normally (no topics)
+                await toggle_group_directly(tg_client, user, group_id, session_user_id, query, account_index)
+            else:
+                # Group has topics — fetch and ask for selection
+                try:
+                    forums = await tg_client.get_dialogs(folder=group_id)
+                    topic_buttons = []
+                    for topic in forums:
+                        if getattr(topic.entity, "thread_id", None):
+                            topic_buttons.append([
+                                InlineKeyboardButton(topic.name, callback_data=f"topic_{group_id}_{account_index}_{topic.entity.id}")
+                            ])
+                    topic_buttons.append([InlineKeyboardButton("◀️ Go Back", callback_data=f"back_groups_{account_index}")])
+                    await query.message.edit_text("Select a topic:", reply_markup=InlineKeyboardMarkup(topic_buttons))
+                except Exception as e:
+                    await query.answer("Failed to fetch topics.")
 
-        exists = next((g for g in group_list if g["id"] == group_id), None)
+    elif data.startswith("topic_"):
+        parts = data.split("_")
+        group_id = int(parts[1])
+        account_index = int(parts[2])
+        topic_id = int(parts[3])
 
-        if exists:
-            group_list.remove(exists)
-            status = "❌"
-            message = "Group removed"
-        else:
-            is_premium = user.get("is_premium", False)
-            limit = 3 if not is_premium else 1000
-            if len(group_list) >= limit:
-                return await query.answer("Group limit reached.", show_alert=True)
-            group_list.append({"id": group_id, "last_sent": datetime.min})
-            status = "✅"
-            message = "Group added"
+        user = await db.get_user(query.from_user.id)
+        session_str = user["accounts"][account_index]["session"]
 
-        await db.group.update_one({"_id": session_user_id}, {"$set": {"groups": group_list}}, upsert=True)
-        await query.answer(message + " " + status, show_alert=False)
+        async with TelegramClient(StringSession(session_str), Config.API_ID, Config.API_HASH) as tg_client:
+            me = await tg_client.get_me()
+            session_user_id = me.id
+
+            group_data = await db.group.find_one({"_id": session_user_id}) or {"_id": session_user_id, "groups": []}
+            group_list = group_data["groups"]
+
+            # Avoid duplicate
+            exists = next((g for g in group_list if g["id"] == group_id and g.get("topic_id") == topic_id), None)
+            if not exists:
+                group_list.append({"id": group_id, "topic_id": topic_id, "last_sent": datetime.min})
+                await db.group.update_one({"_id": session_user_id}, {"$set": {"groups": group_list}}, upsert=True)
+                await query.answer("Group with topic added ✅", show_alert=False)
+            else:
+                await query.answer("Already added", show_alert=True)
 
         await query.message.delete()
-        await show_groups_for_account(client, query.message, user_id, account_index)
+        await show_groups_for_account(client, query.message, query.from_user.id, account_index)
 
     elif data == "help":
 
