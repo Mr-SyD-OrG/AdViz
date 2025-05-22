@@ -47,8 +47,18 @@ async def start(client, message):
         await message.reply_text("Sorry, You are banned.")
         return
 
-    user = message.from_user
-    await db.add_user(client, message)
+    used = message.from_user
+    user = await db.col.find_one({"_id": used.id)
+
+    if not user:
+        user_data = {
+            "_id": used.id,
+            "is_premium": False,
+            "accounts": [],
+            "enabled": False,
+            "intervals": {},
+        }
+        await db.col.insert_one(user_data)
     button = InlineKeyboardMarkup([[
         InlineKeyboardButton(
             '⛅ Uᴘᴅᴀᴛᴇꜱ', url=f'https://t.me/{Config.UPDATES}'),
@@ -59,9 +69,9 @@ async def start(client, message):
         InlineKeyboardButton(' Hᴇʟᴩ ❗', callback_data='help')
     ], [InlineKeyboardButton('⚙️ sᴛΔᴛs ⚙️', callback_data='stats')]])
     if Config.PICS:
-        await message.reply_photo(random.choice(Config.PICS), caption=Txt.START_TXT.format(user.mention), reply_markup=button, parse_mode=enums.ParseMode.HTML)
+        await message.reply_photo(random.choice(Config.PICS), caption=Txt.START_TXT.format(used.mention), reply_markup=button, parse_mode=enums.ParseMode.HTML)
     else:
-        await message.reply_text(text=Txt.START_TXT.format(user.mention), reply_markup=button, disable_web_page_preview=True)
+        await message.reply_text(text=Txt.START_TXT.format(used.mention), reply_markup=button, disable_web_page_preview=True)
 
 
 
