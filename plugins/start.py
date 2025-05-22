@@ -48,7 +48,7 @@ async def start(client, message):
         return
 
     used = message.from_user
-    user = await db.col.find_one({"_id": used.id)
+    user = await db.col.find_one({"_id": used.id})
 
     if not user:
         user_data = {
