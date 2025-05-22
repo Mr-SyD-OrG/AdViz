@@ -234,3 +234,31 @@ async def remove_premium(client, message):
 
     await db.col.update_one({"_id": user_id}, {"$set": {"is_premium": False}})
     await message.reply(f"Premium removed from user `{user_id}`", parse_mode="markdown")
+
+@Client.on_message(filters.command("delete_account") & filters.private)
+async def delete_account_handler(client, message):
+    user_id = message.from_user.id
+    user = await db.get_user(user_id)
+
+    if not user or not user.get("accounts"):
+        return await message.reply("Please add an account first using /add_account")
+
+    accounts = user["accounts"]
+    buttons = []
+
+    for i, acc in enumerate(accounts):
+        try:
+            async with TelegramClient(StringSession(acc["session"]), Config.API_ID, Config.API_HASH) as userbot:
+                me = await userbot.get_me()
+                acc_name = me.first_name or me.username or f"Account {i+1}"
+        except Exception:
+            acc_name = f"Account {i+1} (invalid)"
+
+        buttons.append([
+            InlineKeyboardButton(f"Delete {acc_name}", callback_data=f"choose_delete_{i}")
+        ])
+
+    await message.reply(
+        "Select the account you want to delete:",
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
