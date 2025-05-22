@@ -186,7 +186,7 @@ async def show_accounts(client: Client, message: Message):
         reply_markup=InlineKeyboardMarkup(buttons)
     )
 
-@Client.on_message(filters.command("setinterval") & filters.private)
+@Client.on_message(filters.command("set_interval") & filters.private)
 async def set_interval(client, message):
     user_id = message.from_user.id
     user = await db.get_user(user_id)
@@ -205,3 +205,32 @@ async def set_interval(client, message):
 
     await db.col.update_one({"_id": user_id}, {"$set": {"interval": seconds}})
     await message.reply(f"Custom interval set to {seconds} seconds for all groups.")
+
+@Client.on_message(filters.command("remove_premium") & filters.user(Config.OWNER_ID))
+async def remove_premium(client, message):
+    parts = message.text.split()
+    if len(parts) != 2:
+        return await message.reply("Usage: /remove_premium <user_id>")
+
+    try:
+        user_id = int(parts[1])
+    except:
+        return await message.reply("Invalid user ID.")
+
+    await db.col.update_one({"_id": user_id}, {"$set": {"is_premium": False}})
+    await message.reply(f"Premium removed from user `{user_id}`", parse_mode="markdown")
+
+
+@Client.on_message(filters.command("remove_premium") & filters.user(Config.OWNER_ID))
+async def remove_premium(client, message):
+    parts = message.text.split()
+    if len(parts) != 2:
+        return await message.reply("Usage: /remove_premium <user_id>")
+
+    try:
+        user_id = int(parts[1])
+    except:
+        return await message.reply("Invalid user ID.")
+
+    await db.col.update_one({"_id": user_id}, {"$set": {"is_premium": False}})
+    await message.reply(f"Premium removed from user `{user_id}`", parse_mode="markdown")
