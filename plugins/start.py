@@ -40,6 +40,90 @@ db = Database(Config.DB_URL, Config.DB_NAME)
 
 logger = logging.getLogger(__name__)
 
+
+async def start_forwarding(client, user_id):
+    user = await db.get_user(user_id)
+    if not user or not user.get("accounts"):
+        await client.send_message(user_id, "No userbot account found. Use /add_account first.")
+        return
+
+    if user.get("enabled", False):
+        await client.send_message(user_id, "Forwarding already running. Use /stop to end it before starting again.")
+        return
+
+    syd = await client.send_message(user_id, "Starting...")
+
+    is_premium = user.get("is_premium", False)
+
+    clients = []
+    user_groups = []
+
+    for acc in user["accounts"]:
+        session = StringSession(acc["session"])
+        tele_client = TelegramClient(session, Config.API_ID, Config.API_HASH)
+        await tele_client.start()
+        clients.append(tele_client)
+
+        me = await tele_client.get_me()
+        session_user_id = me.id
+
+        group_data = await db.group.find_one({"_id": session_user_id}) or {"groups": []}
+        groups = group_data["groups"]
+        user_groups.append(groups)
+
+    if not any(user_groups):
+        await client.send_message(user_id, "No groups selected. Use /groups to add some.")
+        return
+
+    sessions[user_id] = clients
+    await db.update_user(user_id, {"enabled": True})
+    await syd.delete()
+    await client.send_message(user_id, "Forwarding started.")
+
+    for i, tele_client in enumerate(clients):
+        if i > 0:
+            await asyncio.sleep(600)  # 10 minute delay between userbots
+
+        groups = user_groups[i]
+
+        while True:
+            if not (await db.get_user(user_id)).get("enabled", False):
+                await client.send_message(user_id, "Stopped!")
+                break
+
+            try:
+                last_msg = (await tele_client.get_messages("me", limit=1))[0]
+            except Exception as e:
+                print(f"Failed to fetch message: {e}")
+                await asyncio.sleep(60)
+                continue
+
+            for grp in groups:
+                gid = grp["id"]
+                topic_id = grp.get("topic_id")
+                interval = 7200 if not is_premium else user.get("interval", 300)
+                last_sent = grp.get("last_sent", datetime.min)
+
+                total_wait = interval - (datetime.now() - last_sent).total_seconds()
+                if total_wait > 0:
+                    for _ in range(int(total_wait)):
+                        if not (await db.get_user(user_id)).get("enabled", False):
+                            await client.send_message(user_id, "Stopped!")
+                            return
+                        await asyncio.sleep(1)
+
+                try:
+                    await tele_client.send_message(
+                        gid,
+                        last_msg,
+                        reply_to=topic_id if topic_id else None
+                    )
+                    grp["last_sent"] = datetime.now()
+                    me = await tele_client.get_me()
+                    await db.group.update_one({"_id": me.id}, {"$set": {"groups": groups}})
+                except Exception as e:
+                    print(f"Error sending to {gid}: {e}")
+
 @Client.on_message(filters.private & filters.command("start"))
 async def start(client, message):
 
@@ -89,7 +173,7 @@ async def stop_forwarding(client, message):
     await message.reply("Trying To Stop.")
     
 @Client.on_message(filters.command("run") & filters.private)
-async def run_forwarding(client, message):
+async def run_forarding(client, message):
     user_id = message.from_user.id
     user = await db.get_user(user_id)
     if not user or not user.get("accounts"):
