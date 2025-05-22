@@ -11,6 +11,7 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y ffmpeg && \
     pip install --upgrade pip && \
+    pip install -U telethon && \
     pip install -r requirements.txt
 
 # Command to run when the container starts
