@@ -133,37 +133,45 @@ async def run_forwarding(client, message):
         groups = user_groups[i]
 
         while True:
+            interval = 1
             if not (await db.get_user(user_id)).get("enabled", False):
+                await message.reply("Stopped!")
                 break  # stop if disabled
 
             try:
                 last_msg = (await tele_client.get_messages("me", limit=1))[0]
             except Exception as e:
                 print(f"Failed to fetch message: {e}")
-                await asyncio.sleep(60)
+                total_slep = 60
+                
+                for _ in range(total_slep // interval):
+                    if not (await db.get_user(user_id)).get("enabled", False):
+                        await message.reply("Stopped!")
+                        break
+                    await asyncio.sleep(interval)
+                
                 continue
 
             for grp in groups:
                 gid = grp["id"]
-                last_sent = grp.get("last_sent", datetime.min)
-                interval = 7200 if not is_premium else user.get("interval", 300)    # default 2hr or 5min
+                total_sleep = 7200 if not is_premium else user.get("interval", 300)    # default 2hr or 5min
 
-                if datetime.now() - last_sent >= timedelta(seconds=interval):
-                    try:
-                        await message.reply("check")
-                        await tele_client.send_message(gid, last_msg)
-                        grp["last_sent"] = datetime.now()
-                        await message.reply("check")
-                        await db.group.update_one(
-                            {"_id": (await tele_client.get_me()).id},
-                            {"$set": {"groups": groups}}
-                        )
-                        await message.reply("check")
-                    except Exception as e:
-                        print(f"Error sending to {gid}: {e}")
+                for _ in range(total_sleep // interval):
+                    if not (await db.get_user(user_id)).get("enabled", False):
+                        await message.reply("Stopped!")
+                        break
+                    await asyncio.sleep(interval)
+
+                try:
+                   await tele_client.send_message(gid, last_msg)
+                except Exception as e:
+                    print(f"Error sending to {gid}: {e}")
             await message.reply("check")
-            await asyncio.sleep(60)
-            await message.reply("check")
+            for _ in range(total_slep // interval):
+                if not (await db.get_user(user_id)).get("enabled", False):
+                    await message.reply("Stopped!")
+                    break
+                await asyncio.sleep(interval)
 
 
 
