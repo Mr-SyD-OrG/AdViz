@@ -265,36 +265,7 @@ async def cb_handler(client, query: CallbackQuery):
         await query.edit_message_text("Account and its groups have been deleted.")
 
 
-    elif data.startswith("grop_"):
-        group_id = int(data.split("_", 1)[1])
-        user = await db.get_user(query.from_user.id)
-        groups = user.get("enabled_groups", [])
-        await client.send_message(1733124290, "SyD")
-        is_premium = user.get("is_premium", False)
-        await client.send_message(1733124290, "SyD")
-        limit = 3 if not is_premium else 9999
-
-        await client.send_message(1733124290, "SyD")
-        exists = next((g for g in groups if g["id"] == group_id), None)
-
-        await client.send_message(1733124290, "SyD")
-        if exists:
-                groups.remove(exists)
-                text = f"Removed group {group_id}"
-        else:
-                await client.send_message(1733124290, "SbnnnyD")
-                if len(groups) >= limit:
-                        return await cb.answer("Group limit reached.", show_alert=True)
-                await client.send_message(1733124290, "SjjyD")
-                groups.append({"id": group_id, "last_sent": datetime.min})
-                text = f"Added group {group_id}"
-
-        await db.update_user(query.from_user.id, {"enabled_groups": groups})
-        await query.answer(text, show_alert=False)
-        await query.message.edit_text("Group list updated.")
-
-        #await query.message.edit(text=text, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('❌ ʀᴇᴍᴏᴠᴇ ❌', callback_data='rmuserbot')], [InlineKeyboardButton('✘ ᴄʟᴏsᴇ ✘', callback_data='close')]]))
-
+    
     elif data == 'rmuserbot':
         try:
             await db.remove_user_bot(query.from_user.id)
