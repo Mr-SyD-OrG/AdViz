@@ -6,8 +6,8 @@ from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMa
 from config import Config, Txt
 from .start import db
 import random
+from telethon.tl.functions.messages import GetForumTopicsRequest
 import psutil
-from info import AUTH_CHANNEL
 from helper.utils import humanbytes
 from telethon.sessions import StringSession
 from telethon import TelegramClient
