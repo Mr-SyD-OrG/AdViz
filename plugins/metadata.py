@@ -104,15 +104,36 @@ async def add_account_handler(client: Client, message: Message):
             reply_to_message_id=message.id
         )
 
-    string = metadata.text.strip()
     try:
-        async with TelegramClient(StringSession(string), Config.API_ID, Config.API_HASH) as userbot:
+        usmsg = await client.ask(
+            text="Send the message you want to save.\n\n**Don't add extra text — it will be treated as ad text.**",
+            chat_id=user_id,
+            filters=filters.text,
+            timeout=60,
+            disable_web_page_preview=True
+        )
+    except ListenerTimeout:
+        return await message.reply_text(
+            "⚠️ Error!!\n\n**Request timed out.**\nRestart by using /add_account",
+            reply_to_message_id=message.id
+        )
+
+    string = metadata.text.strip()
+    text = usmsg.text
+    try:
+        async with TelegramClient(StringSession(session), API_ID, API_HASH) as userbot:
+            await userbot.send_message("me", text)
             me = await userbot.get_me()
+        await message.reply("Message saved to your Saved Messages.\n**Don't add other text — it will be treated as ad text.**")
     except Exception as e:
-        return await message.reply(f"Invalid session string.\n\nError: `{e}`")
+        await message.reply(f"Invalid session string.\n\nError: `{e}`")
+        await message.reply(f"Error while saving message: `{e}`")
+        return
+
     existing_group = await db.group.find_one({"_id": me.id})
-    if existing_group:
-        return await message.reply("This account is already added.")
+    await message.reply(f"This account is already added. {existing_group}")
+    #if existing_group:
+        #return await message.reply("This account is already added.")
     # Save to DB
     if not user:
         user = {"_id": user_id, "accounts": []}
