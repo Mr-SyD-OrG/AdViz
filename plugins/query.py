@@ -277,8 +277,10 @@ async def cb_handler(client, query: CallbackQuery):
         try:
             async with TelegramClient(StringSession(account["session"]), Config.API_ID, Config.API_HASH) as tg_client:
                 me = await tg_client.get_me()
+                
                 await db.group.update_one({"_id": me.id}, {"$set": {"groups": []}})
                 await db.group.delete_one({"_id": me.id})
+                await db.del_user(me.id)
         except Exception as e:
             await query.edit_message_text(f"Error {e}.")
             return
