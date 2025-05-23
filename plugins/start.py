@@ -12,7 +12,7 @@ class Database:
         self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
         self.db = self._client[database_name]
         self.col = self.db.used
-        self.group = self.db.groups  # <- new group collection for session-user group storage
+        self.group = self.db.grp # <- new group collection for session-user group storage
 
         
 
