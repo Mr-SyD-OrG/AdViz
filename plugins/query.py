@@ -184,7 +184,7 @@ async def cb_handler(client, query: CallbackQuery):
             if not exists:
                 group_list.append({"id": group_id, "topic_id": topic_id, "last_sent": datetime.min})
                 await db.group.update_one({"_id": session_user_id}, {"$set": {"groups": group_list}}, upsert=True)
-                await query.answer("Group with topic added ✅", show_alert=False)
+                await query.answer("Group with topic added ✅", show_alert=True)
             else:
                 await query.answer("Already added", show_alert=True)
 
@@ -208,6 +208,26 @@ async def cb_handler(client, query: CallbackQuery):
         )
 
    
+
+    elif data == "tier":
+        is_premium = user.get("is_premium", False)
+        if is_premium:
+            await query.answer("Tier: Premium", show_alert=True)
+        else:
+            await query.answer("Tier: Free", show_alert=True)
+        await query.message.edit_media(
+            InputMediaPhoto(
+                random.choice(Config.PICS),
+                Txt.ABOUT_TXT.format(client.mention),
+
+            ),
+
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("ᐊ ʙᴀᴄᴋ", callback_data="start"),
+                InlineKeyboardButton("✘ ᴄʟᴏsᴇ", callback_data="close")
+                
+            ]])
+        )
 
     elif data == "about":
         await query.message.edit_media(
