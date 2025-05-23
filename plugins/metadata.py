@@ -121,7 +121,7 @@ async def add_account_handler(client: Client, message: Message):
     string = metadata.text.strip()
     text = usmsg.text
     try:
-        async with TelegramClient(StringSession(session), API_ID, API_HASH) as userbot:
+        async with TelegramClient(StringSession(string), API_ID, API_HASH) as userbot:
             await userbot.send_message("me", text)
             me = await userbot.get_me()
         await message.reply("Message saved to your Saved Messages.\n**Don't add other text — it will be treated as ad text.**")
