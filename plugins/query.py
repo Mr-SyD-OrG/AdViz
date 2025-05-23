@@ -82,12 +82,12 @@ async def cb_handler(client, query: CallbackQuery):
 
             reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton(
-                    '⛅ Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/{Config.UPDATES}'),
+                    'Gᴜɪᴅᴇ', url='https://t.me/{Config.UPDATES}'),
                 InlineKeyboardButton(
-                    'Sᴜᴩᴩᴏʀᴛ ⛈️', url='https://t.me/{Config.SUPPORT}')
+                    'Tɪᴇʀ', url='https://t.me/{Config.SUPPORT}')
             ], [
-                InlineKeyboardButton('❄️ Δʙᴏᴜᴛ', callback_data='about'),
-                InlineKeyboardButton('Hᴇʟᴩ ❗', callback_data='help')
+                InlineKeyboardButton('Iɴᴄʀᴇᴀꜱᴇ Lɪᴍɪᴛ', callback_data='about'),
+                InlineKeyboardButton('Gᴇɴᴇʀᴀᴛᴇ Sᴛʀɪɴɢ', callback_data='help')
             ]])
         )
 
