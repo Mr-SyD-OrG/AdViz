@@ -219,6 +219,7 @@ async def run_forarding(client, message):
 
         while True:
             interval = 1
+            total_slep = 60
             if not (await db.get_user(user_id)).get("enabled", False):
                 await message.reply("Stopped!")
                 break  # stop if disabled
@@ -227,8 +228,7 @@ async def run_forarding(client, message):
                 last_msg = (await tele_client.get_messages("me", limit=1))[0]
             except Exception as e:
                 print(f"Failed to fetch message: {e}")
-                total_slep = 60
-                
+                await message.reply(f"Error in Getting Message: {e} ")
                 for _ in range(total_slep // interval):
                     if not (await db.get_user(user_id)).get("enabled", False):
                         await message.reply("Stopped!")
@@ -258,6 +258,7 @@ async def run_forarding(client, message):
                     await db.group.update_one({"_id": me.id}, {"$set": {"groups": groups}})
                 except Exception as e:
                     print(f"Error sending to {gid}: {e}")
+                    await message.reply(f"Error sending to {gid}:\n{e} \nSend It Admin To Take Proper Action, Forwarding Won't Stop.[Never Let The Account Get Banned Due To Spam]")
 
             for _ in range(total_slep // interval):
                 if not (await db.get_user(user_id)).get("enabled", False):
