@@ -273,7 +273,7 @@ async def cb_handler(client, query: CallbackQuery):
 
         if not user or index >= len(user.get("accounts", [])):
             return await query.answer("Invalid selection.", show_alert=True)
-        
+        account = user["accounts"].pop(index)
         try:
             async with TelegramClient(StringSession(account["session"]), Config.API_ID, Config.API_HASH) as tg_client:
                 me = await tg_client.get_me()
@@ -285,7 +285,7 @@ async def cb_handler(client, query: CallbackQuery):
             await query.edit_message_text(f"Error {e}.")
             return
 
-       # account = user["accounts"].pop(index)
+        
         await db.col.update_one({"_id": user_id}, {"$set": {"accounts": user["accounts"]}})
         await query.edit_message_text("Account and its groups have been deleted.")
 
