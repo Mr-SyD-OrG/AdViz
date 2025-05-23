@@ -281,6 +281,7 @@ async def cb_handler(client, query: CallbackQuery):
                 await db.group.delete_one({"_id": me.id})
         except Exception as e:
             await query.edit_message_text(f"Error {e}.")
+            return
 
         account = user["accounts"].pop(index)
         await db.col.update_one({"_id": user_id}, {"$set": {"accounts": user["accounts"]}})
