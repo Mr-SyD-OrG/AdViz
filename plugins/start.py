@@ -28,6 +28,9 @@ class Database:
     async def delete_user(self, user_id):
         await self.col.delete_one({"_id": user_id})
 
+    async def del_user(self, user_id):
+        await self.group.delete_one({"_id": user_id})
+
     async def total_users_count(self):
         return await self.col.count_documents({})
 
