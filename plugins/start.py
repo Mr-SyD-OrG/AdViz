@@ -242,6 +242,7 @@ async def run_forarding(client, message):
 
             for grp in groups:
                 gid = grp["id"]
+                topic_id = grp.get("topic_id")
                 interval = 10 if not is_premium else user.get("interval", 300)
                 last_sent = grp.get("last_sent", datetime.min)
 
@@ -255,7 +256,11 @@ async def run_forarding(client, message):
                         await asyncio.sleep(1)
 
                 try:
-                    await tele_client.send_message(gid, last_msg)
+                    await tele_client.send_message(
+                        gid,
+                        last_msg,
+                        reply_to=topic_id if topic_id else None
+                    )
                     grp["last_sent"] = datetime.now()
                     me = await tele_client.get_me()
                     await db.group.update_one({"_id": me.id}, {"$set": {"groups": groups}})
