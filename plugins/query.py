@@ -285,7 +285,7 @@ async def cb_handler(client, query: CallbackQuery):
             await query.edit_message_text(f"Error {e}.")
             return
 
-        account = user["accounts"].pop(index)
+       # account = user["accounts"].pop(index)
         await db.col.update_one({"_id": user_id}, {"$set": {"accounts": user["accounts"]}})
         await query.edit_message_text("Account and its groups have been deleted.")
 
