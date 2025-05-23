@@ -278,8 +278,9 @@ async def cb_handler(client, query: CallbackQuery):
             async with TelegramClient(StringSession(account["session"]), Config.API_ID, Config.API_HASH) as tg_client:
                 me = await tg_client.get_me()
                 await db.group.delete_one({"_id": me.id})
-        except:
-            pass
+        except Exception as e:
+            await query.edit_message_text(f"Error {e}.")
+
         account = user["accounts"].pop(index)
         await db.col.update_one({"_id": user_id}, {"$set": {"accounts": user["accounts"]}})
         await query.edit_message_text("Account and its groups have been deleted.")
