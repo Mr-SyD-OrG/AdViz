@@ -71,7 +71,7 @@ async def show_groups_for_account(client, message, user_id, account_index):
 
 
 @Client.on_callback_query()
-async def cb_handler(client, query: CallbackQuery):
+async def cb_handler(client: Client, query: CallbackQuery):
     data = query.data
     user_id = query.from_user.id
     if data == "start":
