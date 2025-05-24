@@ -106,11 +106,11 @@ async def start_forwarding(client, user_id):
                     current_bio = (await tele_client(GetFullUserRequest(meme.id))).about or ""
                     message_lines = "WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"
                     if current_last_name != expected_name:
-                         message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_last_name}'.")
+                         message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_name}'.")
                          update_needed = True
 
                     if expected_name not in current_bio:
-                        message_lines.append(f"Bio is '{current_bio}', updating to '{expected_bio}'.")
+                        message_lines.append(f"Bio is '{current_bio}', updating to '{expected_name}'.")
                         update_needed = True
                         bio_edit = expected_name
                     else:
@@ -264,11 +264,11 @@ async def run_forarding(client, message):
                     current_bio = full.full_user.about or ""
                     message_lines = ["WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"]
                     if current_last_name != expected_name:
-                         message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_last_name}'.")
+                         message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_name}'.")
                          update_needed = True
 
                     if expected_name not in current_bio:
-                        message_lines.append(f"Bio is '{current_bio}', updating to '{expected_bio}'.")
+                        message_lines.append(f"Bio is '{current_bio}', updating to '{expected_name}'.")
                         update_needed = True
                         bio_edit = expected_name
                     else:
