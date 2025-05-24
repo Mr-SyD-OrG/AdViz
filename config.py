@@ -37,12 +37,12 @@ class Config(object):
 
 class Txt(object):
     # part of text configuration
-    START_TXT = """<b>Hᴀɪ {} 👋,
-I Δᴍ Aɴ Aᴅᴠᴀɴᴄᴇᴅ Aɴᴅ Yᴇᴛ Pᴏᴡᴇʀꜰᴜʟ Rᴇɴᴀᴍᴇ Bᴏᴛ Yᴏᴜ Hᴀᴅ єᴠєʀ Sᴇᴇɴ ᴩʀᴏʙᴀʙʟʏ.... 🪄
-Yᴏᴜ Cᴀɴ Rᴇɴᴀᴍᴇ & Cʜᴀɴɢᴇ Tʜᴜᴍʙɴᴀɪʟ Oꜰ Δɴʏ Fɪʟᴇ Fᴏʀ <u>FR̊ΞΞ</u>🩵
+    START_TXT = """<b>Hᴇʏ {} 👋,
+ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ {} ᴡᴏʀʟᴅ'ꜱ ꜰɪʀꜱᴛ ꜰʀᴇᴇ ʙᴀɴ-ꜱᴩᴀᴍ ʙᴏᴛ
 
-<blockquote>Bᴏᴛ Δʟꜱᴏ Sᴜᴩᴩᴏʀᴛ 2ɢʙ+ ꜰɪʟᴇꜱ Δ Wɪᴛʜ ΔҒҒᴏʀᴅᴀʙʟᴇ Pʀɪᴄᴇ 🚨
-</blockquote></b>"""
+ʙʏ ᴜꜱɪɴɢ ᴛʜɪꜱ ʙᴏᴛ, ʏᴏᴜ ᴀɢʀᴇᴇ ᴛᴏ ᴀʟʟ ᴛᴇʀᴍꜱ ᴀɴᴅ ꜱᴇʀᴠɪᴄᴇ ᴄᴏɴᴅɪᴛɪᴏɴꜱ ᴍᴇɴᴛɪᴏɴᴇᴅ ɪɴ @VeeADTnS
+
+ꜱᴛᴀʀᴛ ʏᴏᴜʀ ᴀᴜᴛᴏᴍᴀᴛᴇᴅ ᴛʜɪɴɢꜱ ᴜꜱɪɴɢ /add_account</b>"""
 
     ABOUT_TXT = """<b>╭───────────⍟
 ➥ ᴍy ɴᴀᴍᴇ : {}
@@ -55,12 +55,18 @@ Yᴏᴜ Cᴀɴ Rᴇɴᴀᴍᴇ & Cʜᴀɴɢᴇ Tʜᴜᴍʙɴᴀɪʟ Oꜰ Δɴʏ 
 ╰───────────────⍟ """
 
     HELP_TXT = """
-◽ <b><u>Hᴏᴡ Tᴏ Sᴇᴛ Tʜᴜᴍʙɴɪʟᴇ</u></b>
-  
-<b>•></b> /start Tʜᴇ Bᴏᴛ Aɴᴅ Sᴇɴᴅ Aɴy Pʜᴏᴛᴏ Tᴏ Aᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟy Sᴇᴛ Tʜᴜᴍʙɴɪʟᴇ.
-<b>•></b> /del_thumb Uꜱᴇ Tʜɪꜱ Cᴏᴍᴍᴀɴᴅ Tᴏ Dᴇʟᴇᴛᴇ Yᴏᴜʀ Oʟᴅ Tʜᴜᴍʙɴɪʟᴇ.
-<b>•></b> /view_thumb Uꜱᴇ Tʜɪꜱ Cᴏᴍᴍᴀɴᴅ Tᴏ Vɪᴇᴡ Yᴏᴜʀ Cᴜʀʀᴇɴᴛ Tʜᴜᴍʙɴɪʟᴇ.
 
+<b>Tɪᴇʀ : Fʀᴇᴇ</b>
+<b>• ᴀᴄᴄᴏᴜɴᴛ : 1</b> 
+<b>• ɢʀᴏᴜᴩꜱ : 3</b> 
+<b>• ᴄᴜꜱᴛᴏᴍ ʙɪᴏ ᴄʜᴀɴɢᴇ : ʏᴇꜱ</b> 
+<b>• ᴛɪᴍᴇ ɪɴᴛᴇʀᴠᴀʟ : 2ʜʀꜱ </b> 
+
+<b>Tɪᴇʀ : Pʀᴇᴍɪᴜᴍ</b>
+<b>• ᴀᴄᴄᴏᴜɴᴛ : ᴜɴʟɪᴍɪᴛᴇᴅ</b> 
+<b>• ɢʀᴏᴜᴩꜱ : ᴜɴʟɪᴍɪᴛᴇᴅ</b> 
+<b>• ᴄᴜꜱᴛᴏᴍ ʙɪᴏ ᴄʜᴀɴɢᴇ : ɴᴏ</b> 
+<b>• ᴛɪᴍᴇ ɪɴᴛᴇʀᴠᴀʟ : ᴄᴜꜱᴛᴏᴍ </b>
 
 <u><b><blockquote>Jᴜꜱᴛ ꜱᴇɴᴅ ᴛʜᴇ ᴩɪᴄᴛᴜʀᴇ.. ⚡</blockquote></u></b>
 
@@ -87,16 +93,7 @@ Exᴀᴍᴩʟᴇ:- <code> /set_caption 📕 Fɪʟᴇ Nᴀᴍᴇ: {filename}
 <b>⦿ Developer:</b> <a href=https://t.me/SyD_Xyz>🔅 ᴍ.ʀ Sʏᦔ 🔅</a>
 """
 
-    SEND_METADATA = """
-❪ SET CUSTOM METADATA ❫
-
-☞ Fᴏʀ Exᴀᴍᴘʟᴇ:-
-
-◦ <code> -map 0 -c:s copy -c:a copy -c:v copy -metadata title="Powered By:- @Bot_Cracker" -metadata author="@Syd_Xyz" -metadata:s:s title="Subtitled By :- @Mod_Moviez_X" -metadata:s:a title="By :- @GetTGLinks" -metadata:s:v title="By:- @Bot_Cracker" </code>
-
-📥 Fᴏʀ Hᴇʟᴘ Cᴏɴᴛᴀᴄᴛ..: @SyD_XyZ
-"""
-
+    
     STATS_TXT = """
 ╔════❰ Sᴇʀᴠᴇʀ sᴛᴀᴛS  ❱═❍⊱❁۪۪
 ║╭━━━━━━━━━━━━━━━➣
@@ -110,10 +107,4 @@ Exᴀᴍᴩʟᴇ:- <code> /set_caption 📕 Fɪʟᴇ Nᴀᴍᴇ: {filename}
 ╚══════════════════❍⊱❁۪۪        
 """
 
-    PROGRESS_BAR = """<b>\n
-╭━━━━❰Pʀᴏɢʀεss ʙΔʀ❱━➣
-┣⪼ 🗃️ Sɪᴢᴇ: {1} | {2}
-┣⪼ ⏳️ Dᴏɴᴇ : {0}%
-┣⪼ 🚀 Sᴩᴇᴇᴅ: {3}/s
-┣⪼ ⏰️ Eᴛᴀ: {4}
-╰━━━━━━━━━━━━━━━➣ </b>"""
+    
