@@ -3,6 +3,12 @@ from config import Config, Txt
 import random, asyncio
 import logging
 from datetime import datetime, timedelta
+from telethon.tl.functions.account import UpdateProfileRequest
+from pyrogram import Client, filters, enums
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
+from telethon.sync import TelegramClient
+from telethon.sessions import StringSession
+
 sessions = {}
 API_HASH = Config.API_HASH
 API_ID = Config.API_ID
@@ -36,11 +42,6 @@ class Database:
 
     async def total_users_count(self):
         return await self.col.count_documents({})
-
-from pyrogram import Client, filters, enums
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
-from telethon.sync import TelegramClient
-from telethon.sessions import StringSession
 
 db = Database(Config.DB_URL, Config.DB_NAME)
 
