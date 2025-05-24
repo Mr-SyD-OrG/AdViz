@@ -8,6 +8,7 @@ from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
 from telethon.sync import TelegramClient
 from telethon.sessions import StringSession
+from telethon import functions
 
 sessions = {}
 API_HASH = Config.API_HASH
