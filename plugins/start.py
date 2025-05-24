@@ -54,7 +54,7 @@ async def start_forwarding(client, user_id):
     #Don't Use Directly
     user = await db.get_user(user_id)
     usr = await client.get_users(user_id)
-    user_nam = f"For {usr.username}" if usr.username else ""
+    user_nam = f"For @{usr.username}" if usr.username else ""
     if not user or not user.get("accounts"):
         await client.send_message(user_id, "No userbot account found. Use /add_account first.")
         return
@@ -101,16 +101,16 @@ async def start_forwarding(client, user_id):
                 break
             try:
                 if not is_premium:
-                    expected_name = f"Bot is run by {temp.U_NAME}" + user_nam
+                    expected_name = f"Bot is run by @{temp.U_NAME} " + user_nam
                     current_last_name = meme.last_name or ""
                     current_bio = (await tele_client(GetFullUserRequest(meme.id))).about or ""
-                    message_lines = "WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"
+                    message_lines = ["WARNING: You Have Changed Account Info.\n[Never Repeat Else Get Premium]"]
                     if current_last_name != expected_name:
-                         message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_name}'.")
+                         message_lines.append(f"\nLast name is '{current_last_name}', updating to '{expected_name}'.")
                          update_needed = True
 
                     if expected_name not in current_bio:
-                        message_lines.append(f"Bio is '{current_bio}', updating to '{expected_name}'.")
+                        message_lines.append(f"\nBio is '{current_bio}', updating to '{expected_name}'.")
                         update_needed = True
                         bio_edit = expected_name
                     else:
@@ -208,7 +208,7 @@ async def run_forarding(client, message):
     user_id = message.from_user.id
     user = await db.get_user(user_id)
     usr = await client.get_users(user_id)
-    user_nam = f"For {usr.username}" if usr.username else ""
+    user_nam = f"For @{usr.username}" if usr.username else ""
     if not user or not user.get("accounts"):
         return await message.reply("No userbot account found. Use /add_account first.")
 
@@ -258,17 +258,17 @@ async def run_forarding(client, message):
                 break  # stop if disabled
             try:
                 if not is_premium:
-                    expected_name = f"Bot is run by {temp.U_NAME}" + user_nam
+                    expected_name = f"Bot is run by @{temp.U_NAME} " + user_nam
                     current_last_name = meme.last_name or ""
                     full = await tele_client(GetFullUserRequest(meme.id))
                     current_bio = full.full_user.about or ""
-                    message_lines = ["WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"]
+                    message_lines = ["WARNING: You Have Changed Account Info.\n[Never Repeat Else Get Premium]"]
                     if current_last_name != expected_name:
-                         message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_name}'.")
+                         message_lines.append(f"\nLast name is '{current_last_name}', updating to '{expected_name}'.")
                          update_needed = True
 
                     if expected_name not in current_bio:
-                        message_lines.append(f"Bio is '{current_bio}', updating to '{expected_name}'.")
+                        message_lines.append(f"\nBio is '{current_bio}', updating to '{expected_name}'.")
                         update_needed = True
                         bio_edit = expected_name
                     else:
