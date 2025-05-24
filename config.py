@@ -55,7 +55,6 @@ class Txt(object):
 ╰───────────────⍟ """
 
     HELP_TXT = """
-
 <b>Tɪᴇʀ : Fʀᴇᴇ</b>
 <b>• ᴀᴄᴄᴏᴜɴᴛ : 1</b> 
 <b>• ɢʀᴏᴜᴩꜱ : 3</b> 
@@ -67,30 +66,6 @@ class Txt(object):
 <b>• ɢʀᴏᴜᴩꜱ : ᴜɴʟɪᴍɪᴛᴇᴅ</b> 
 <b>• ᴄᴜꜱᴛᴏᴍ ʙɪᴏ ᴄʜᴀɴɢᴇ : ɴᴏ</b> 
 <b>• ᴛɪᴍᴇ ɪɴᴛᴇʀᴠᴀʟ : ᴄᴜꜱᴛᴏᴍ </b>
-
-<u><b><blockquote>Jᴜꜱᴛ ꜱᴇɴᴅ ᴛʜᴇ ᴩɪᴄᴛᴜʀᴇ.. ⚡</blockquote></u></b>
-
-◽ <b><u>Hᴏᴡ Tᴏ Sᴇᴛ Cᴜꜱᴛᴏᴍ Cᴀᴩᴛɪᴏɴ</u></b>
-
-<b>•></b> /set_caption - Uꜱᴇ Tʜɪꜱ Cᴏᴍᴍᴀɴᴅ Tᴏ Sᴇᴛ ᴀ Cᴜꜱᴛᴏᴍ Cᴀᴩᴛɪᴏɴ
-<b>•></b> /see_caption - Uꜱᴇ Tʜɪꜱ Cᴏᴍᴍᴀɴᴅ Tᴏ Vɪᴇᴡ Yᴏᴜʀ Cᴜꜱᴛᴏᴍ Cᴀᴩᴛɪᴏɴ
-<b>•></b> /del_caption - Uꜱᴇ Tʜɪꜱ Cᴏᴍᴍᴀɴᴅ Tᴏ Dᴇʟᴇᴛᴇ Yᴏᴜʀ Cᴜꜱᴛᴏᴍ Cᴀᴩᴛɪᴏɴ
-Exᴀᴍᴩʟᴇ:- <code> /set_caption 📕 Fɪʟᴇ Nᴀᴍᴇ: {filename}
-💾 Sɪᴢᴇ: {filesize}
-⏰ Dᴜʀᴀᴛɪᴏɴ: {duration} </code>
-
-◽ <b><u>Hᴏᴡ Tᴏ Rᴇɴᴀᴍᴇ A Fɪʟᴇ</u></b>
-<b>•></b> Sᴇɴᴅ Aɴy Fɪʟᴇ Aɴᴅ Tyᴩᴇ Nᴇᴡ Fɪʟᴇ Nᴀᴍᴇ \nAɴᴅ Sᴇʟᴇᴄᴛ Tʜᴇ Fᴏʀᴍᴀᴛ [ document, video, audio ].           
-
-◽ <b><u>Sᴇᴛ ꜱᴜꜰꜰɪx ᴀɴᴅ ᴩʀᴇꜰɪx.</b></u>
-<b>•></b> /set_prefix - Sᴇᴛ ᴩʀᴇꜰɪx(ꜰɪʀꜱᴛ ᴡᴏʀᴅ)
-<b>•></b> /set_suffix - Sᴇᴛ ꜱᴜꜰꜰɪx(ʟᴀꜱᴛ ᴡᴏʀᴅ)
-<b>•></b> /see_prefix - Sᴇᴇ ᴩʀᴇꜰɪx
-<b>•></b> /see_suffix - Sᴇᴇ ꜱᴜꜰꜰɪx
-<b>•></b> /del_prefix - Dᴇʟᴇᴛᴇ ᴩʀᴇꜰɪx
-<b>•></b> /del_suffix - Dᴇʟᴇᴛᴇ ꜱᴜꜰꜰɪx
-
-<b>⦿ Developer:</b> <a href=https://t.me/SyD_Xyz>🔅 ᴍ.ʀ Sʏᦔ 🔅</a>
 """
 
     
