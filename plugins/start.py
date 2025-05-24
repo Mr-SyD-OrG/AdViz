@@ -182,6 +182,8 @@ async def start(client, message):
             ], [
                 InlineKeyboardButton('Iɴᴄʀᴇᴀꜱᴇ Lɪᴍɪᴛ', url='https://t.me/vizean'),
                 InlineKeyboardButton('Gᴇɴᴇʀᴀᴛᴇ Sᴛʀɪɴɢ', url='https://t.me/snowstringgenbot')
+            ], [
+                InlineKeyboardButton('Aᴅᴅ Aᴄᴄᴏᴜɴᴛ', callback_data='add_account')
           ]])
     if Config.PICS:
         await message.reply_photo(random.choice(Config.PICS), caption=Txt.START_TXT.format(used.mention, temp.U_NAME, temp.B_NAME), reply_markup=button, parse_mode=enums.ParseMode.HTML)
