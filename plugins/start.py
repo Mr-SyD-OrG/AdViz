@@ -104,7 +104,7 @@ async def start_forwarding(client, user_id):
                     expected_name = f"Bot is run by @{temp.U_NAME} " + user_nam
                     current_last_name = meme.last_name or ""
                     current_bio = (await tele_client(GetFullUserRequest(meme.id))).about or ""
-                    message_lines = ["WARNING: You Have Changed Account Info.\n[Never Repeat Else Get Premium]"]
+                    message_lines = ["WARNING: You Have Changed Account Info. [Never Repeat Again. To Remove Ad Get Premium]"]
                     if current_last_name != expected_name:
                          message_lines.append(f"\nLast name is '{current_last_name}', updating to '{expected_name}'.")
                          update_needed = True
@@ -262,7 +262,7 @@ async def run_forarding(client, message):
                     current_last_name = meme.last_name or ""
                     full = await tele_client(GetFullUserRequest(meme.id))
                     current_bio = full.full_user.about or ""
-                    message_lines = ["WARNING: You Have Changed Account Info.\n[Never Repeat Else Get Premium]"]
+                    message_lines = ["WARNING: You Have Changed Account Info. [Never Repeat Again. To Remove Ad Get Premium]"]
                     if current_last_name != expected_name:
                          message_lines.append(f"\nLast name is '{current_last_name}', updating to '{expected_name}'.")
                          update_needed = True
