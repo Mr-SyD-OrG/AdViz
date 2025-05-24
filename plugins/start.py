@@ -14,8 +14,6 @@ class Database:
         self.col = self.db.used
         self.group = self.db.grp # <- new group collection for session-user group storage
 
-        
-
     async def get_user(self, user_id):
         return await self.col.find_one({"_id": user_id})
 
@@ -45,15 +43,12 @@ logger = logging.getLogger(__name__)
 
 
 async def start_forwarding(client, user_id):
+    #Don't Use Directly
     user = await db.get_user(user_id)
     if not user or not user.get("accounts"):
         await client.send_message(user_id, "No userbot account found. Use /add_account first.")
         return
-
-    if user.get("enabled", False):
-        await client.send_message(user_id, "Forwarding already running. Use /stop to end it before starting again.")
-        return
-
+        
     syd = await client.send_message(user_id, "Starting...")
 
     is_premium = user.get("is_premium", False)
@@ -129,7 +124,8 @@ async def start_forwarding(client, user_id):
 
 @Client.on_message(filters.private & filters.command("start"))
 async def start(client, message):
-
+    bot_info = await client.get_me()
+    username = bot_info.username
     if message.from_user.id in Config.BANNED_USERS:
         await message.reply_text("Sorry, You are banned.")
         return
