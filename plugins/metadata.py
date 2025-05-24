@@ -131,9 +131,8 @@ async def add_account_handler(client: Client, message: Message):
         return
 
     existing_group = await db.group.find_one({"_id": me.id})
-    await message.reply(f"This account is already added. {existing_group}")
-    #if existing_group:
-        #return await message.reply("This account is already added.")
+    if existing_group:
+        return await message.reply("This account is already added.")
     # Save to DB
     if not user:
         user = {"_id": user_id, "accounts": []}
