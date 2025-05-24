@@ -85,7 +85,7 @@ async def cb_handler(client, query: CallbackQuery):
                 InlineKeyboardButton('Gᴜɪᴅᴇ', callback_data='guide'),
                 InlineKeyboardButton('Tɪᴇʀ', callback_data='tier')
             ], [
-                InlineKeyboardButton('Iɴᴄʀᴇᴀꜱᴇ Lɪᴍɪᴛ', callback_data='limit'),
+                InlineKeyboardButton('Iɴᴄʀᴇᴀꜱᴇ Lɪᴍɪᴛ', url='https://t.me/vizean'),
                 InlineKeyboardButton('Gᴇɴᴇʀᴀᴛᴇ Sᴛʀɪɴɢ', url='https://t.me/snowstringgenbot')
             ]])
         )
