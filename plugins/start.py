@@ -173,15 +173,13 @@ async def start(client, message):
             "intervals": {},
         }
         await db.col.insert_one(user_data)
-    button = InlineKeyboardMarkup([[
-        InlineKeyboardButton(
-            '⛅ Uᴘᴅᴀᴛᴇꜱ', url=f'https://t.me/{Config.UPDATES}'),
-        InlineKeyboardButton(
-            ' Sᴜᴘᴘᴏʀᴛ 🌨️', url=f'https://t.me/{Config.SUPPORT}')
-    ], [
-        InlineKeyboardButton('❄️ Δʙᴏᴜᴛ', callback_data='about'),
-        InlineKeyboardButton(' Hᴇʟᴩ ❗', callback_data='help')
-    ], [InlineKeyboardButton('⚙️ sᴛΔᴛs ⚙️', callback_data='stats')]])
+    button=InlineKeyboardMarkup([[
+                InlineKeyboardButton('Gᴜɪᴅᴇ', url='https://t.me/{Config.UPDATES}'),
+                InlineKeyboardButton('Tɪᴇʀ', callback_data='tier')
+            ], [
+                InlineKeyboardButton('Iɴᴄʀᴇᴀꜱᴇ Lɪᴍɪᴛ', callback_data='about'),
+                InlineKeyboardButton('Gᴇɴᴇʀᴀᴛᴇ Sᴛʀɪɴɢ', url='https://t.me/snowstringgenbot')
+          ]])
     if Config.PICS:
         await message.reply_photo(random.choice(Config.PICS), caption=Txt.START_TXT.format(used.mention, temp.U_NAME, temp.B_NAME), reply_markup=button, parse_mode=enums.ParseMode.HTML)
     else:
