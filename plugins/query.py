@@ -117,7 +117,7 @@ async def cb_handler(client, query: CallbackQuery):
         )
 
     # === Group Selection ===
-        elif data.startswith("group_"):
+    elif data.startswith("group_"):
         parts = data.split("_")
         group_id = int(parts[1])
         account_index = int(parts[2])
@@ -254,11 +254,11 @@ async def cb_handler(client, query: CallbackQuery):
             ]])
         )
 
-    elif data == "about":
+    elif data == "guide":
         await query.message.edit_media(
             InputMediaPhoto(
                 random.choice(Config.PICS),
-                Txt.HELP_TXT.format(client.mention),
+                Txt.GUIDE_TXT.format(client.mention),
 
             ),
 
@@ -311,15 +311,6 @@ async def cb_handler(client, query: CallbackQuery):
         await db.col.update_one({"_id": user_id}, {"$set": {"accounts": user["accounts"]}})
         await query.edit_message_text("Account and its groups have been deleted.")
 
-
-    
-    elif data == 'rmuserbot':
-        try:
-            await db.remove_user_bot(query.from_user.id)
-            await query.message.edit(text='**User Bot Removed Successfully ✅**', reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('✘ ᴄʟᴏsᴇ ✘', callback_data='close')]]))
-        except:
-            await query.answer(f'Hey {query.from_user.first_name}\n\n You have already deleted the user')
-
     elif data == "close":
         try:
             await query.message.delete()
@@ -328,3 +319,5 @@ async def cb_handler(client, query: CallbackQuery):
         except:
             await query.message.delete()
             await query.message.continue_propagation()
+    
+    
