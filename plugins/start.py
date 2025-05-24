@@ -8,7 +8,8 @@ from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
 from telethon.sync import TelegramClient
 from telethon.sessions import StringSession
-from telethon import functions
+from telethon.tl.functions.users import GetFullUser
+
 
 sessions = {}
 API_HASH = Config.API_HASH
@@ -102,7 +103,7 @@ async def start_forwarding(client, user_id):
                 if not is_premium:
                     expected_name = f"Bot is run by {temp.U_NAME}" + user_nam
                     current_last_name = meme.last_name or ""
-                    current_bio = (await tele_client(functions.account.GetFullUserRequest(meme.id))).about or ""
+                    current_bio = (await tele_client(GetFullUser(meme.id))).about or ""
                     message_lines = "WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"
                     if current_last_name != expected_name:
                          message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_last_name}'.")
