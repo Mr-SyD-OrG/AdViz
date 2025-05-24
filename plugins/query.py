@@ -239,6 +239,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
    
 
     elif data == "add_account":
+        await query.answer()
         user_id = query.from_user.id
         user = await db.get_user(user_id)
 
