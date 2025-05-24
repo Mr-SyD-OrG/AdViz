@@ -15,9 +15,7 @@ class Config(object):
     DB_NAME = os.environ.get("DB_NAME", "cluster0")
     DB_URL = os.environ.get("DB_URL", "")  # ⚠️ Required
 
-    SUPPORT = os.environ.get("SUPPORT", "syd_xyz") #Without @ Or Modify
-    UPDATES = os.environ.get("UPDATES", "syd_xyz") #Without @
-
+    
     # other configs
     BOT_UPTIME = time.time()
     PICS = os.environ.get("PICS", 'https://envs.sh/s3r.jpg https://envs.sh/s33.jpg').split()
@@ -25,7 +23,6 @@ class Config(object):
         admin) else admin for admin in os.environ.get('ADMIN', '').split()]  # ⚠️ Required
 
     FORCE_SUB = os.environ.get("FORCE_SUB", "") # ⚠️ Required Username without @
-    LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", ""))  # ⚠️ Required
     FLOOD = int(os.environ.get("FLOOD", '10'))
     BANNED_USERS = set(int(x) for x in os.environ.get(
         "BANNED_USERS", "1234567890").split())
