@@ -258,7 +258,7 @@ async def cb_handler(client, query: CallbackQuery):
         await query.message.edit_media(
             InputMediaPhoto(
                 random.choice(Config.PICS),
-                Txt.GUIDE_TXT.format(client.mention),
+                Txt.GUIDE_TXT,
 
             ),
 
@@ -269,28 +269,7 @@ async def cb_handler(client, query: CallbackQuery):
             ]])
         )
 
-    elif data == 'stats':
-        buttons = [[InlineKeyboardButton(
-            '• ʙᴀᴄᴋ', callback_data='start'), InlineKeyboardButton('⟲ ʀᴇʟᴏᴀᴅ', callback_data='stats')]]
-        reply_markup = InlineKeyboardMarkup(buttons)
-        currentTime = time.strftime("%Hh%Mm%Ss", time.gmtime(
-            time.time() - Config.BOT_UPTIME))
-        total, used, free = shutil.disk_usage(".")
-        total = humanbytes(total)
-        used = humanbytes(used)
-        free = humanbytes(free)
-        cpu_usage = psutil.cpu_percent()
-        ram_usage = psutil.virtual_memory().percent
-        disk_usage = psutil.disk_usage('/').percent
-        await query.message.edit_media(
-            InputMediaPhoto(
-                random.choice(Config.PICS),
-                Txt.STATS_TXT.format(
-                    currentTime, total, used, disk_usage, free, cpu_usage, ram_usage)
-            ),
-            reply_markup=reply_markup
-        )
-
+   
     elif data.startswith("choose_delete_"):
         index = int(data.split("_")[-1])
         user_id = query.from_user.id
