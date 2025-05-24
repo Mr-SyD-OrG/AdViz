@@ -237,6 +237,60 @@ async def cb_handler(client, query: CallbackQuery):
 
    
 
+    elif data == "add_account":
+        user_id = query.from_user.id
+        user = await db.get_user(user_id)
+
+        if user and not user.get("is_premium", False) and len(user.get("accounts", [])) >= 1:
+            return await query.message.reply("Free users can only add one account. Upgrade to premium for more.")
+
+        try:
+            await query.message.reply("Please send your **Telethon StringSession**.\n\nTimeout in 30 seconds.")
+            metadata = await client.ask(
+                chat_id=user_id,
+                filters=filters.text,
+                timeout=30
+            )
+        except ListenerTimeout:
+            return await query.message.reply_text(
+                "⚠️ Error!!\n\n**Request timed out.**\nRestart by using 'Add Account' again."
+            )
+
+        try:
+            await query.message.reply("Send the message you want to save.\n\n**Don't add extra text — it will be treated as ad text.**")
+            usmsg = await client.ask(
+                chat_id=user_id,
+                filters=filters.text,
+                timeout=60
+            )
+        except ListenerTimeout:
+            return await query.message.reply_text(
+                "⚠️ Error!!\n\n**Request timed out.**\nRestart by using 'Add Account' again."
+            )
+
+        string = metadata.text.strip()
+        text = usmsg.text
+
+        try:
+            async with TelegramClient(StringSession(string), Config.API_ID, Config.API_HASH) as userbot:
+                await userbot.send_message("me", text)
+                me = await userbot.get_me()
+        except Exception as e:
+            await query.message.reply(f"Invalid session string.\n\nError: `{e}`")
+            return
+
+        existing_group = await db.group.find_one({"_id": me.id})
+        if existing_group:
+            await query.message.reply(f"This account is already added.\n\n{existing_group}")
+            return
+
+        if not user:
+            user = {"_id": user_id, "accounts": []}
+
+        user.setdefault("accounts", []).append({"session": string})
+        await db.update_user(user_id, user)
+        await query.message.reply("Account added successfully and validated.")
+
     elif data == "tier":
         user = await db.get_user(query.from_user.id)
         is_premium = user.get("is_premium", False)
