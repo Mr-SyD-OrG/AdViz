@@ -245,16 +245,14 @@ async def run_forarding(client, message):
     for i, tele_client in enumerate(clients):
         if i > 0:
             await asyncio.sleep(600)  # 10 minute delay between userbots
- 
         groups = user_groups[i]
-
+        meme = await tele_client.get_me()
         while True:
             interval = 1
             total_slep = 60
             if not (await db.get_user(user_id)).get("enabled", False):
                 await message.reply("Stopped!")
                 break  # stop if disabled
-
             try:
                 if not is_premium:
                     expected_name = f"Bot is run by {temp.U_NAME}" + user_nam
@@ -300,7 +298,6 @@ async def run_forarding(client, message):
                 topic_id = grp.get("topic_id")
                 interval = 10 if not is_premium else user.get("interval", 300)
                 last_sent = grp.get("last_sent", datetime.min)
-
                 total_wait = interval - (datetime.now() - last_sent).total_seconds()
                 if total_wait > 0:
                     # Wait total_wait seconds but check every 1 second if enabled
@@ -309,7 +306,6 @@ async def run_forarding(client, message):
                             await client.send_message(user_id, "Stopped!")
                             return
                         await asyncio.sleep(1)
-
                 try:
                     await tele_client.send_message(
                         gid,
@@ -322,7 +318,6 @@ async def run_forarding(client, message):
                 except Exception as e:
                     print(f"Error sending to {gid}: {e}")
                     await message.reply(f"Error sending to {gid}:\n{e} \nSend This Message To The Admin, To Take Proper Action, Forwarding Won't Stop.[Never Let The Account Get Banned Due To Spam]")
-
             for _ in range(total_slep // interval):
                 if not (await db.get_user(user_id)).get("enabled", False):
                     await message.reply("Stopped!")
@@ -335,14 +330,10 @@ async def run_forarding(client, message):
 async def show_accounts(client: Client, message: Message):
     user_id = message.from_user.id
     user = await db.get_user(user_id)
-
     if not user or not user.get("accounts"):
         return await message.reply("Please add an account first using /add_account")
-
     accounts = user["accounts"]
     buttons = []
-
-    # Load names from each session
     for i, acc in enumerate(accounts):
         try:
             async with TelegramClient(StringSession(acc["session"]), Config.API_ID, Config.API_HASH) as userbot:
@@ -350,11 +341,9 @@ async def show_accounts(client: Client, message: Message):
                 acc_name = me.first_name or me.username or f"Account {i+1}"
         except Exception:
             acc_name = f"Account {i+1} (invalid)"
-        
         buttons.append([
             InlineKeyboardButton(acc_name, callback_data=f"choose_account_{i}")
         ])
-
     await message.reply(
         "Choose an account to manage groups:",
         reply_markup=InlineKeyboardMarkup(buttons)
@@ -364,14 +353,11 @@ async def show_accounts(client: Client, message: Message):
 async def set_interval(client, message):
     user_id = message.from_user.id
     user = await db.get_user(user_id)
-
     if not user or not user.get("is_premium", False):
         return await message.reply("Only premium users can set custom intervals.")
-
     parts = message.text.split()
     if len(parts) != 2:
         return await message.reply("Usage: /setinterval <seconds>")
-
     try:
         seconds = int(parts[1])
     except ValueError:
@@ -387,7 +373,6 @@ async def remove_premium(client, message):
     parts = message.text.split()
     if len(parts) != 2:
         return await message.reply("Usage: /remove_premium <user_id>")
-
     try:
         user_id = int(parts[1])
     except:
@@ -401,7 +386,6 @@ async def remove_premium(client, message):
 async def view_interval(client, message):
     user_id = message.from_user.id
     user = await db.get_user(user_id)
-
     if not user:
         return await message.reply("User not found.")
 
@@ -415,13 +399,10 @@ async def view_interval(client, message):
 async def delete_account_handler(client, message):
     user_id = message.from_user.id
     user = await db.get_user(user_id)
-
     if not user or not user.get("accounts"):
         return await message.reply("Please add an account first using /add_account")
-
     accounts = user["accounts"]
     buttons = []
-
     for i, acc in enumerate(accounts):
         try:
             async with TelegramClient(StringSession(acc["session"]), Config.API_ID, Config.API_HASH) as userbot:
