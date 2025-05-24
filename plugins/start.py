@@ -51,8 +51,6 @@ async def start_forwarding(client, user_id):
     #Don't Use Directly
     user = await db.get_user(user_id)
     usr = await client.get_users(user_id)
-    bot_info = await client.get_me()
-    userame = bot_info.username
     user_nam = f"For {usr.username}" if usr.username else ""
     if not user or not user.get("accounts"):
         await client.send_message(user_id, "No userbot account found. Use /add_account first.")
@@ -99,7 +97,7 @@ async def start_forwarding(client, user_id):
                 await client.send_message(user_id, "Stopped!")
                 break
             if not is_premium:
-                expected_name = f"Bot is run by {userame}" + user_nam
+                expected_name = f"Bot is run by {temp.U_NAME}" + user_nam
                 current_last_name = meme.last_name or ""
                 current_bio = (await tele_client(functions.account.GetFullUserRequest(meme.id))).about or ""
                 message_lines = "WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"
@@ -156,8 +154,6 @@ async def start_forwarding(client, user_id):
 
 @Client.on_message(filters.private & filters.command("start"))
 async def start(client, message):
-    bot_info = await client.get_me()
-    username = bot_info.username
     if message.from_user.id in Config.BANNED_USERS:
         await message.reply_text("Sorry, You are banned.")
         return
@@ -208,8 +204,6 @@ async def run_forarding(client, message):
     user_id = message.from_user.id
     user = await db.get_user(user_id)
     usr = await client.get_users(user_id)
-    bot_info = await client.get_me()
-    userame = bot_info.username
     user_nam = f"For {usr.username}" if usr.username else ""
     if not user or not user.get("accounts"):
         return await message.reply("No userbot account found. Use /add_account first.")
@@ -261,10 +255,10 @@ async def run_forarding(client, message):
                 break  # stop if disabled
 
             if not is_premium:
-                expected_name = f"Bot is run by {userame}" + user_nam
+                expected_name = f"Bot is run by {temp.U_NAME}" + user_nam
                 current_last_name = meme.last_name or ""
                 current_bio = (await tele_client(functions.account.GetFullUserRequest(meme.id))).about or ""
-                message_lines = "WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"
+                message_lines = ["WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"]
                 if current_last_name != expected_name:
                     message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_last_name}'.")
                     update_needed = True
@@ -281,7 +275,7 @@ async def run_forarding(client, message):
                         last_name=expected_name,
                         about=bio_edit
                     ))
-                    await client.send_message(user_id, "\n".join(message_lines))
+                    await message.reply("\n".join(message_lines))
             
 
             try:
