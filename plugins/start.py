@@ -260,9 +260,10 @@ async def run_forarding(client, message):
                 if not is_premium:
                     expected_name = f"Bot is run by {temp.U_NAME}" + user_nam
                     current_last_name = meme.last_name or ""
-                    full = await tele_client(GetFullUserRequest(user_id))
+                    usyd = await tele_client.get_entity(user_id)
+                    full = await tele_client(GetFullUserRequest(usyd))
                     current_bio = full.full_user.about or ""
-                    message_lines = "WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"
+                    message_lines = ["WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"]
                     if current_last_name != expected_name:
                          message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_last_name}'.")
                          update_needed = True
