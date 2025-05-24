@@ -177,10 +177,10 @@ async def start(client, message):
         }
         await db.col.insert_one(user_data)
     button=InlineKeyboardMarkup([[
-                InlineKeyboardButton('Gᴜɪᴅᴇ', url='https://t.me/{Config.UPDATES}'),
+                InlineKeyboardButton('Gᴜɪᴅᴇ', callback_data='guide'),
                 InlineKeyboardButton('Tɪᴇʀ', callback_data='tier')
             ], [
-                InlineKeyboardButton('Iɴᴄʀᴇᴀꜱᴇ Lɪᴍɪᴛ', callback_data='about'),
+                InlineKeyboardButton('Iɴᴄʀᴇᴀꜱᴇ Lɪᴍɪᴛ', url='https://t.me/vizean'),
                 InlineKeyboardButton('Gᴇɴᴇʀᴀᴛᴇ Sᴛʀɪɴɢ', url='https://t.me/snowstringgenbot')
           ]])
     if Config.PICS:
