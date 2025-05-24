@@ -38,7 +38,7 @@ class Config(object):
 class Txt(object):
     # part of text configuration
     START_TXT = """<b>Hᴇʏ {} 👋,
-ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ {} ᴡᴏʀʟᴅ'ꜱ ꜰɪʀꜱᴛ ꜰʀᴇᴇ ʙᴀɴ-ꜱᴩᴀᴍ ʙᴏᴛ
+ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ <a href=https://t.me/{}>{}</a> ᴡᴏʀʟᴅ'ꜱ ꜰɪʀꜱᴛ ꜰʀᴇᴇ ʙᴀɴ-ꜱᴩᴀᴍ ʙᴏᴛ
 
 ʙʏ ᴜꜱɪɴɢ ᴛʜɪꜱ ʙᴏᴛ, ʏᴏᴜ ᴀɢʀᴇᴇ ᴛᴏ ᴀʟʟ ᴛᴇʀᴍꜱ ᴀɴᴅ ꜱᴇʀᴠɪᴄᴇ ᴄᴏɴᴅɪᴛɪᴏɴꜱ ᴍᴇɴᴛɪᴏɴᴇᴅ ɪɴ @VeeADTnS
 
