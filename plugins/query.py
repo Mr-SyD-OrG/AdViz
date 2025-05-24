@@ -64,6 +64,7 @@ async def show_groups_for_account(client, message, user_id, account_index):
                     InlineKeyboardButton(title, callback_data=f"group_{d.id}_{account_index}")
                 ])
 
+        buttons.append([InlineKeyboardButton("🗑️ Delete All Groups", callback_data=f"delete_all_{account_index}")])
         buttons.append([InlineKeyboardButton("◀️ Go Back", callback_data="back_to_accounts")])
         await message.reply("Select groups to forward to:", reply_markup=InlineKeyboardMarkup(buttons))
 
@@ -188,6 +189,22 @@ async def cb_handler(client, query: CallbackQuery):
 
         await query.message.delete()
         await show_groups_for_account(client, query.message, query.from_user.id, account_index)
+
+
+    elif data.startswith("delete_all_"):
+        account_index = int(data.split("_")[2])
+        user = await db.get_user(query.from_user.id)
+        session_str = user["accounts"][account_index]["session"]
+
+        async with TelegramClient(StringSession(session_str), Config.API_ID, Config.API_HASH) as tg_client:
+            me = await tg_client.get_me()
+            session_user_id = me.id
+
+            # Clear all groups for this session user
+            await db.group.update_one({"_id": session_user_id}, {"$set": {"groups": []}}, upsert=True)
+            await query.answer("All group data deleted.", show_alert=True)
+
+            await show_groups_for_account(client, query.message, query.from_user.id, account_index)
 
     elif data == "help":
 
