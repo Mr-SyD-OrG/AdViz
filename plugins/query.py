@@ -117,7 +117,7 @@ async def cb_handler(client, query: CallbackQuery):
         )
 
     # === Group Selection ===
-    elif data.startswith("group_"):
+        elif data.startswith("group_"):
         parts = data.split("_")
         group_id = int(parts[1])
         account_index = int(parts[2])
@@ -131,7 +131,6 @@ async def cb_handler(client, query: CallbackQuery):
 
             entity = await tg_client.get_entity(group_id)
 
-            # If group does not have forum (topic) enabled
             if not getattr(entity, "forum", False):
                 await toggle_group_directly(tg_client, user, group_id, session_user_id, query, account_index)
             else:
@@ -144,11 +143,16 @@ async def cb_handler(client, query: CallbackQuery):
                         limit=100
                     ))
 
+                    group_data = await db.group.find_one({"_id": session_user_id}) or {"_id": session_user_id, "groups": []}
+                    group_list = group_data["groups"]
+                    selected_topic = next((g.get("topic_id") for g in group_list if g["id"] == group_id), None)
+
                     topic_buttons = []
                     for topic in topics.topics:
+                        selected = " ✅" if topic.id == selected_topic else ""
                         topic_buttons.append([
                             InlineKeyboardButton(
-                                topic.title,
+                                topic.title + selected,
                                 callback_data=f"topic_{group_id}_{account_index}_{topic.id}"
                             )
                         ])
@@ -160,7 +164,6 @@ async def cb_handler(client, query: CallbackQuery):
                 except Exception as e:
                     print(f"Failed to fetch topics: {e}")
                     await query.answer("Failed to fetch topics.", show_alert=True)
-
 
     elif data.startswith("topic_"):
         parts = data.split("_")
@@ -178,18 +181,26 @@ async def cb_handler(client, query: CallbackQuery):
             group_data = await db.group.find_one({"_id": session_user_id}) or {"_id": session_user_id, "groups": []}
             group_list = group_data["groups"]
 
-            # Avoid duplicate
-            exists = next((g for g in group_list if g["id"] == group_id and g.get("topic_id") == topic_id), None)
-            if not exists:
+            updated = False
+            for g in group_list:
+                if g["id"] == group_id:
+                    if g.get("topic_id") == topic_id:
+                        g.pop("topic_id", None)
+                        await query.answer("Topic removed ❌", show_alert=True)
+                    else:
+                        g["topic_id"] = topic_id
+                        await query.answer("Topic updated ✅", show_alert=True)
+                    updated = True
+                    break
+
+            if not updated:
                 group_list.append({"id": group_id, "topic_id": topic_id, "last_sent": datetime.min})
-                await db.group.update_one({"_id": session_user_id}, {"$set": {"groups": group_list}}, upsert=True)
                 await query.answer("Group with topic added ✅", show_alert=True)
-            else:
-                await query.answer("Already added", show_alert=True)
+
+            await db.group.update_one({"_id": session_user_id}, {"$set": {"groups": group_list}}, upsert=True)
 
         await query.message.delete()
         await show_groups_for_account(client, query.message, query.from_user.id, account_index)
-
 
     elif data.startswith("delete_all_"):
         account_index = int(data.split("_")[2])
