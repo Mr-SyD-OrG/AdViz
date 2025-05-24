@@ -216,10 +216,8 @@ async def cb_handler(client, query: CallbackQuery):
         await query.message.edit_media(
             InputMediaPhoto(
                 random.choice(Config.PICS),
-                Txt.ABOUT_TXT.format(client.mention),
-
+                Txt.HELP_TXT,
             ),
-
             reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton("ᐊ ʙᴀᴄᴋ", callback_data="start"),
                 InlineKeyboardButton("✘ ᴄʟᴏsᴇ", callback_data="close")
@@ -231,7 +229,7 @@ async def cb_handler(client, query: CallbackQuery):
         await query.message.edit_media(
             InputMediaPhoto(
                 random.choice(Config.PICS),
-                Txt.ABOUT_TXT.format(client.mention),
+                Txt.HELP_TXT.format(client.mention),
 
             ),
 
