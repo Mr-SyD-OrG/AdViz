@@ -160,7 +160,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                             )
                         ])
                     topic_buttons.append([
-                        InlineKeyboardButton("◀️ Go Back", callback_data=f"group_{account_index}")
+                        InlineKeyboardButton("◀️ Go Back", callback_data=f"group_{group_id}_{account_index}")
                     ])
                     await query.message.edit_text("Select a topic:", reply_markup=InlineKeyboardMarkup(topic_buttons))
 
