@@ -7,6 +7,11 @@ sessions = {}
 API_HASH = Config.API_HASH
 API_ID = Config.API_ID
 
+class temp(object):
+    ME = None
+    U_NAME = None
+    B_NAME = None
+    
 class Database:
     def __init__(self, uri, database_name):
         self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
