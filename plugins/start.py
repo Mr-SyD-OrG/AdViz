@@ -45,6 +45,8 @@ logger = logging.getLogger(__name__)
 async def start_forwarding(client, user_id):
     #Don't Use Directly
     user = await db.get_user(user_id)
+    usr = await client.get_users(user_id)
+    user_nam = f"For {usr.username}" if usr.username else ""
     if not user or not user.get("accounts"):
         await client.send_message(user_id, "No userbot account found. Use /add_account first.")
         return
@@ -64,7 +66,7 @@ async def start_forwarding(client, user_id):
 
         me = await tele_client.get_me()
         session_user_id = me.id
-
+        
         group_data = await db.group.find_one({"_id": session_user_id}) or {"groups": []}
         groups = group_data["groups"]
         user_groups.append(groups)
@@ -88,6 +90,25 @@ async def start_forwarding(client, user_id):
             if not (await db.get_user(user_id)).get("enabled", False):
                 await client.send_message(user_id, "Stopped!")
                 break
+            expected_name = ""
+            current_last_name = me.last_name or ""
+            current_bio = (await tele_client(functions.account.GetFullUserRequest(me.id))).about or ""
+            if current_last_name != expected_last_name:
+                message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_last_name}'.")
+                update_needed = True
+
+            if expected_bio not in current_bio:
+                message_lines.append(f"Bio is '{current_bio}', updating to '{expected_bio}'.")
+                update_needed = True
+
+            if update_needed:
+                await tg_client(UpdateProfileRequest(
+                    last_name=expected_last_name,
+                    about=expected_bio
+                ))
+                await client_bot.send_message(user_id, "\n".join(message_lines))
+            else:
+                await client_bot.send_message(user_id, "Last name and bio are already set correctly.")
 
             try:
                 last_msg = (await tele_client.get_messages("me", limit=1))[0]
@@ -197,7 +218,8 @@ async def run_forarding(client, message):
         # Get the account's own user ID to fetch groups from group collection
         me = await tele_client.get_me()
         session_user_id = me.id
-
+        username = f"For @{message.from_user.username}" if message.from_user.username else " "
+        
         group_data = await db.group.find_one({"_id": session_user_id}) or {"groups": []}
         groups = group_data["groups"]
         user_groups.append(groups)
