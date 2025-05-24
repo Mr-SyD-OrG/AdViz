@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from pyrogram import Client
 from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from config import Config, Txt
-from .start import db
+from .start import db, temp
 import random
 from telethon.tl.functions.channels import GetForumTopicsRequest
 import psutil
@@ -76,7 +76,7 @@ async def cb_handler(client, query: CallbackQuery):
         await query.message.edit_media(
             InputMediaPhoto(
                 random.choice(Config.PICS),
-                Txt.START_TXT.format(query.from_user.mention),
+                Txt.START_TXT.format(query.from_user.mention, temp.U_NAME, temp.B_NAME),
 
             ),
 
