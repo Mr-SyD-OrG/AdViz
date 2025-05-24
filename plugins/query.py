@@ -236,6 +236,7 @@ async def cb_handler(client, query: CallbackQuery):
    
 
     elif data == "tier":
+        user = await db.get_user(query.from_user.id)
         is_premium = user.get("is_premium", False)
         if is_premium:
             await query.answer("Tier: Premium", show_alert=True)
