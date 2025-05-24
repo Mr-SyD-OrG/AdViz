@@ -96,29 +96,32 @@ async def start_forwarding(client, user_id):
             if not (await db.get_user(user_id)).get("enabled", False):
                 await client.send_message(user_id, "Stopped!")
                 break
-            if not is_premium:
-                expected_name = f"Bot is run by {temp.U_NAME}" + user_nam
-                current_last_name = meme.last_name or ""
-                current_bio = (await tele_client(functions.account.GetFullUserRequest(meme.id))).about or ""
-                message_lines = "WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"
-                if current_last_name != expected_name:
-                    message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_last_name}'.")
-                    update_needed = True
+            try:
+                if not is_premium:
+                    expected_name = f"Bot is run by {temp.U_NAME}" + user_nam
+                    current_last_name = meme.last_name or ""
+                    current_bio = (await tele_client(functions.account.GetFullUserRequest(meme.id))).about or ""
+                    message_lines = "WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"
+                    if current_last_name != expected_name:
+                         message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_last_name}'.")
+                         update_needed = True
 
-                if expected_name not in current_bio:
-                    message_lines.append(f"Bio is '{current_bio}', updating to '{expected_bio}'.")
-                    update_needed = True
-                    bio_edit = expected_name
-                else:
-                    bio_edit = current_bio
+                    if expected_name not in current_bio:
+                        message_lines.append(f"Bio is '{current_bio}', updating to '{expected_bio}'.")
+                        update_needed = True
+                        bio_edit = expected_name
+                    else:
+                        update_needed = False
+                        bio_edit = current_bio
 
-                if update_needed:
-                    await tele_client(UpdateProfileRequest(
-                        last_name=expected_name,
-                        about=bio_edit
-                    ))
-                    await client.send_message(user_id, "\n".join(message_lines))
-            
+                    if update_needed:
+                        await tele_client(UpdateProfileRequest(
+                            last_name=expected_name,
+                            about=bio_edit
+                        ))  
+                        await client.send_message(user_id, "\n".join(message_lines))
+            except Exception as e:
+                print(f"Failed to check user data: {e}")
             try:
                 last_msg = (await tele_client.get_messages("me", limit=1))[0]
             except Exception as e:
@@ -254,30 +257,33 @@ async def run_forarding(client, message):
                 await message.reply("Stopped!")
                 break  # stop if disabled
 
-            if not is_premium:
-                expected_name = f"Bot is run by {temp.U_NAME}" + user_nam
-                current_last_name = meme.last_name or ""
-                current_bio = (await tele_client(functions.account.GetFullUserRequest(meme.id))).about or ""
-                message_lines = ["WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"]
-                if current_last_name != expected_name:
-                    message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_last_name}'.")
-                    update_needed = True
+            try:
+                if not is_premium:
+                    expected_name = f"Bot is run by {temp.U_NAME}" + user_nam
+                    current_last_name = meme.last_name or ""
+                    current_bio = (await tele_client(functions.account.GetFullUserRequest(meme.id))).about or ""
+                    message_lines = "WARNING: You Have Changed Account Info.[Never Repeat Else Get Premium]"
+                    if current_last_name != expected_name:
+                         message_lines.append(f"Last name is '{current_last_name}', updating to '{expected_last_name}'.")
+                         update_needed = True
 
-                if expected_name not in current_bio:
-                    message_lines.append(f"Bio is '{current_bio}', updating to '{expected_bio}'.")
-                    update_needed = True
-                    bio_edit = expected_name
-                else:
-                    bio_edit = current_bio
+                    if expected_name not in current_bio:
+                        message_lines.append(f"Bio is '{current_bio}', updating to '{expected_bio}'.")
+                        update_needed = True
+                        bio_edit = expected_name
+                    else:
+                        update_needed = False
+                        bio_edit = current_bio
 
-                if update_needed:
-                    await tele_client(UpdateProfileRequest(
-                        last_name=expected_name,
-                        about=bio_edit
-                    ))
-                    await message.reply("\n".join(message_lines))
-            
-
+                    if update_needed:
+                        await tele_client(UpdateProfileRequest(
+                            last_name=expected_name,
+                            about=bio_edit
+                        ))  
+                        await message.reply("\n".join(message_lines))
+            except Exception as e:
+                await message.reply(f"Error in Getting Message: {e} ")
+                print(f"Failed to check user data: {e}")
             try:
                 last_msg = (await tele_client.get_messages("me", limit=1))[0]
             except Exception as e:
@@ -317,7 +323,7 @@ async def run_forarding(client, message):
                     await db.group.update_one({"_id": me.id}, {"$set": {"groups": groups}})
                 except Exception as e:
                     print(f"Error sending to {gid}: {e}")
-                    await message.reply(f"Error sending to {gid}:\n{e} \nSend It Admin To Take Proper Action, Forwarding Won't Stop.[Never Let The Account Get Banned Due To Spam]")
+                    await message.reply(f"Error sending to {gid}:\n{e} \nSend This Message To The Admin, To Take Proper Action, Forwarding Won't Stop.[Never Let The Account Get Banned Due To Spam]")
 
             for _ in range(total_slep // interval):
                 if not (await db.get_user(user_id)).get("enabled", False):
